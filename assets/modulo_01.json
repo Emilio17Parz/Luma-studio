@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 1: Introducción a Zero Trust Exchange (ZTE)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 1: Introducción a Zero Trust Exchange (ZTE).",
+  "temas": [
+    {
+      "id": "tema_01_introduccion_zte",
+      "titulo": "Módulo 1: Introducción a Zero Trust Exchange (ZTE)",
+      "objetivos": [
+        "Comprender el concepto de Zero Trust Exchange (ZTE) y sus ventajas frente a la seguridad perimetral tradicional basada en cortafuegos.",
+        "Diferenciar las arquitecturas de inspección inline Zero Trust respecto al acceso mediante VPN tradicionales.",
+        "Identificar los tres pilares principales de productos de la plataforma Zscaler: ZIA (seguridad), ZPA (acceso privado) y ZDX (experiencia digital).",
+        "Analizar los principios de Zero Trust donde el acceso no se concede por rango de IP o red, sino evaluando cada solicitud de forma individual contra políticas contextuales."
+      ],
+      "resumen": "El Zero Trust Exchange (ZTE) es la plataforma de seguridad en la nube de Zscaler diseñada para conectar de forma segura a usuarios, dispositivos y aplicaciones sin colocarlos en la red corporativa. A diferencia del modelo de seguridad perimetral tradicional —que confía en los dispositivos ubicados dentro del perímetro o conectados mediante VPN—, ZTE opera bajo el principio de 'nunca confiar, siempre verificar'. En la seguridad tradicional, una vez que un usuario supera la autenticación VPN, obtiene acceso a nivel de red (Capa 3), lo que permite el movimiento lateral de amenazas.\n\nEn cambio, ZTE actúa como un intermediario o proxy inline que se sitúa entre el usuario y la aplicación de destino. Inspecciona todo el tráfico en tiempo real y aplica políticas de acceso basadas en la identidad del usuario, el estado de postura del dispositivo (Device Posture), el contexto de la ubicación y el riesgo. La plataforma Zscaler se articula en tres pilares de producto fundamentales:\n1. ZIA (Zscaler Internet Access): Protege el tráfico saliente de usuarios hacia internet y aplicaciones SaaS mediante controles de seguridad como inspección TLS/SSL, firewall en la nube, DLP, sandbox y filtrado URL.\n2. ZPA (Zscaler Private Access): Proporciona acceso seguro con principio de mínimo privilegio a aplicaciones privadas (en centros de datos o nubes públicas) utilizando conectores salientes (App Connectors) que evitan la exposición de IPs públicas y eliminan el movimiento lateral.\n3. ZDX (Zscaler Digital Experience): Mide y monitorea proactivamente la experiencia digital de los usuarios mediante probes sintéticos (Web Probes y Cloud Path Probes) que recorren la ruta desde el endpoint, la red y las aplicaciones, sin requerir agentes adicionales gracias a la reutilización del Zscaler Client Connector.",
+      "conceptos": [
+        {
+          "termino": "Zero Trust Exchange (ZTE)",
+          "definicion": "Plataforma multitenant de seguridad en la nube que conecta de forma segura a usuarios con aplicaciones utilizando el principio de cero confianza, actuando como un proxy inline sin conectar al usuario a la red corporativa."
+        },
+        {
+          "termino": "ZIA (Zscaler Internet Access)",
+          "definicion": "Pilar de seguridad de Zscaler enfocado en proteger el acceso hacia internet y servicios SaaS mediante inspección inline de tráfico, seguridad web, protección contra amenazas y políticas DLP."
+        },
+        {
+          "termino": "ZPA (Zscaler Private Access)",
+          "definicion": "Pilar de Zscaler enfocado en el acceso remoto seguro a aplicaciones privadas internas sin otorgar acceso a la red, utilizando conectores salientes dentro del modelo 'inside-out'."
+        },
+        {
+          "termino": "ZDX (Zscaler Digital Experience)",
+          "definicion": "Plataforma de monitoreo de experiencia digital basada en la nube que mide el rendimiento de extremo a extremo (Endpoint, Network, App) utilizando el Zscaler Client Connector desplegado."
+        },
+        {
+          "termino": "Inspección Inline (Proxy Forward)",
+          "definicion": "Mecanismo en el que el tráfico pasa activamente a través del Service Edge de Zscaler para ser desencriptado, inspeccionado y evaluado antes de ser entregado al destino."
+        },
+        {
+          "termino": "Movimiento Lateral",
+          "definicion": "Técnica utilizada por atacantes para desplazarse entre sistemas dentro de una misma red tras haber comprometido un punto de entrada; el modelo ZTE lo evita al no colocar al usuario en la red."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_01_01",
+          "pregunta": "¿Cuál es la diferencia fundamental entre la seguridad perimetral tradicional basada en VPN y el Zero Trust Exchange?",
+          "respuesta": "La VPN tradicional otorga acceso a nivel de red (Capa 3) permitiendo movimiento lateral. ZTE actúa como proxy inline que conecta usuarios a aplicaciones específicas sin conectarlos a la red corporativa.",
+          "fuente": "Módulo 1 — Introducción a Zero Trust Exchange, Sección Temas Clave"
+        },
+        {
+          "id": "card_01_02",
+          "pregunta": "¿Cuáles son los tres pilares de producto principales que componen la plataforma de Zscaler?",
+          "respuesta": "ZIA (Zscaler Internet Access) para seguridad web/SaaS, ZPA (Zscaler Private Access) para acceso a aplicaciones privadas y ZDX (Zscaler Digital Experience) para monitoreo de la experiencia digital.",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Overview"
+        },
+        {
+          "id": "card_01_03",
+          "pregunta": "¿Requiere ZDX la instalación de un agente independiente o plugins adicionales para el monitoreo?",
+          "respuesta": "No. ZDX reutiliza el Zscaler Client Connector ya desplegado para ZIA/ZPA, sin requerir agentes nuevos, plugins de navegador ni infraestructura virtual.",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Overview"
+        },
+        {
+          "id": "card_01_04",
+          "pregunta": "¿En qué consiste el principio de evaluación de acceso Zero Trust?",
+          "respuesta": "El acceso nunca se concede por rango de red o dirección IP; cada solicitud se autentica y evalúa individualmente contra políticas basadas en usuario, dispositivo, contexto y riesgo.",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Identity Fundamentals"
+        },
+        {
+          "id": "card_01_05",
+          "pregunta": "¿Cómo previene ZPA la exposición de aplicaciones privadas a escaneos en internet?",
+          "respuesta": "Utiliza un modelo 'inside-out' donde los App Connectors inician conexiones de salida hacia la nube de Zscaler, manteniendo los servidores ocultos sin puertos de entrada abiertos.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZPA App Connectors"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_01_01",
+          "enunciado": "¿Por qué el modelo Zero Trust Exchange es más seguro frente al movimiento lateral de amenazas que una VPN tradicional?",
+          "opciones": [
+            "Porque comprime el tráfico para evitar la exfiltración de archivos pesados.",
+            "Porque conecta al usuario directamente a la aplicación deseada sin otorgar acceso a la red corporativa.",
+            "Porque asigna direcciones IP estáticas a todos los dispositivos remotos.",
+            "Porque requiere un cortafuegos físico instalado en el domicilio del usuario."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "A diferencia de una VPN que extiende el perímetro de red (Capa 3) permitiendo que un dispositivo infectado escanee la red interna, ZTE conecta al usuario únicamente con la aplicación autorizada mediante un broker seguro.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 1 — Introducción a Zero Trust Exchange y Módulo 2 — Gestión de usuarios"
+        },
+        {
+          "id": "quiz_01_02",
+          "enunciado": "¿Cuál de los siguientes pilares de Zscaler se encarga de proteger y controlar el acceso de los usuarios cuando navegan hacia internet o utilizan aplicaciones SaaS públicas?",
+          "opciones": [
+            "ZPA (Zscaler Private Access)",
+            "ZIA (Zscaler Internet Access)",
+            "ZDX (Zscaler Digital Experience)",
+            "ZIdentity"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "ZIA (Zscaler Internet Access) es el servicio de seguridad inline que protege las conexiones hacia internet y aplicaciones SaaS públicas aplicando políticas de firewall, sandbox, DLP y filtrado URL.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 1 — Introducción a Zero Trust Exchange y Módulo 10 — Monitoreo con ZDX"
+        },
+        {
+          "id": "quiz_01_03",
+          "enunciado": "¿Qué ventaja arquitectónica clave ofrece ZDX respecto a las herramientas tradicionales de Application Performance Management (APM)?",
+          "opciones": [
+            "Reemplaza la necesidad de contar con un proveedor de identidad (IdP).",
+            "Reutiliza el Zscaler Client Connector ya instalado para ZIA/ZPA sin requerir agentes nuevos.",
+            "Funciona de forma offline sin enviar telemetría a la nube.",
+            "Elimina la necesidad de utilizar certificados SSL en la organización."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Un diferenciador fundamental de ZDX es que aprovecha el Client Connector existente para ejecutar probes sintéticos, evitando desplegar agentes adicionales o infraestructura dedicada.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Overview"
+        },
+        {
+          "id": "quiz_01_04",
+          "enunciado": "En el modelo Zero Trust de Zscaler, ¿cuál es el criterio fundamental para conceder autorización a un recurso?",
+          "opciones": [
+            "Pertenecer al rango de subred de la oficina central.",
+            "Estar conectado a un puerto Ethernet físico del edificio.",
+            "La evaluación individual de cada solicitud contra políticas basadas en identidad, dispositivo y contexto de riesgo.",
+            "Poseer una dirección IP pública fija registrada en el sistema."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "Zero Trust no otorga acceso explícito por red ni por dirección IP. Cada solicitud es verificada de forma contextual evaluando identidad (SAML/SCIM), postura del dispositivo y reglas de política.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Identity Fundamentals"
+        }
+      ]
+    }
+  ]
+}

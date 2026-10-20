@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 10: Monitoreo con ZDX (Monitoring with ZDX)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 10: Monitoreo con ZDX (Monitoring with ZDX).",
+  "temas": [
+    {
+      "id": "tema_10_monitoreo_con_zdx",
+      "titulo": "Módulo 10: Monitoreo con ZDX (Monitoring with ZDX)",
+      "objetivos": [
+        "Comprender la arquitectura de monitoreo de Zscaler Digital Experience (ZDX) y su ejecución sobre el Zscaler Client Connector sin agentes adicionales.",
+        "Diferenciar entre Web Probes (miden la aplicación: PFT, TTFB, DNS) y Cloud Path Probes (miden la red: Hop Count, Packet Loss, Latency/Jitter).",
+        "Analizar el cálculo pesimista del ZDX Score (el puntaje más bajo en una hora define la calificación de esa hora) y el uso de baselines dinámicos sobre thresholds estáticos.",
+        "Evaluar las capacidades de ZDX Copilot para la automatización, análisis predictivo y reducción de MTTR en la mesa de ayuda."
+      ],
+      "resumen": "El Módulo 10 abarca ZDX (Zscaler Digital Experience), el pilar de monitoreo de experiencia y rendimiento de Zscaler.\n\n1. ZDX Overview y Arquitectura:\nZDX mide el rendimiento de extremo a extremo desde la perspectiva del usuario hacia servicios SaaS o internet. Se ejecuta de forma nativa sobre el Zscaler Client Connector ya desplegado, sin requerir agentes nuevos ni plugins. Su arquitectura de 3 capas comprende: Destination Applications -> ZDX Infrastructure (Telemetry & Policy Gateway TPG + Analytics Engine) -> Endpoints.\n\n2. Probes Sintéticos y las 3 Etapas:\nEvalúa la ruta digital en 3 etapas: Endpoint (dispositivo/Wi-Fi) -> Network (salto a salto) -> Apps (SaaS/Cloud uptime). Responde a la pregunta central: '¿Es la aplicación o es la red?' mediante dos familias de probes sintéticos enviados cada 5 minutos:\n- Web Probes: Miden la aplicación (Page Fetch Time PFT, DNS Time/Availability, Server Response Time TTFB).\n- Cloud Path Probes: Miden la ruta de red salto a salto (Hop Count, Packet Loss %, Latency y Jitter/desviación estándar).\n\n3. ZDX Score y Baselines Dinámicos:\nEl ZDX Score (0 a 100) se divide en Good (66-100), Okay (34-65) y Poor (0-33). Posee un cálculo deliberadamente pesimista: cada probe se puntúa de 1 a 100 y el puntaje MÁS BAJO registrado dentro de una hora se convierte en el ZDX Score de toda la hora, priorizando la detección de degradaciones breves. Para las alertas, ZDX utiliza Baselines Dinámicos (condiciones adaptativas aprendidas automáticamente) en lugar de Thresholds Estáticos, evitando falsos positivos en conexiones internacionales.\n\n4. ZDX Copilot:\nAsistente impulsado por IA que procesa telemetría propia para brindar diagnósticos proactivos, guided troubleshooting y automatización de remediación, reduciendo el tiempo medio de resolución (MTTR).",
+      "conceptos": [
+        {
+          "termino": "ZDX (Zscaler Digital Experience)",
+          "definicion": "Plataforma de monitoreo de experiencia digital en la nube que evalúa el rendimiento endpoint-red-app reutilizando el Zscaler Client Connector."
+        },
+        {
+          "termino": "Web Probes vs. Cloud Path Probes",
+          "definicion": "Web Probes miden el rendimiento de la aplicación (PFT, TTFB, DNS); Cloud Path Probes miden la calidad de la ruta de red salto a salto (latencia, pérdida de paquetes, jitter)."
+        },
+        {
+          "termino": "Cálculo Pesimista del ZDX Score",
+          "definicion": "Método de cálculo donde el valor más bajo de probe registrado en un intervalo de 60 minutos define la puntuación ZDX Score de esa hora entera."
+        },
+        {
+          "termino": "Dynamic Baseline vs. Static Threshold",
+          "definicion": "Dynamic Baseline aprende las condiciones normales adaptativas de cada ruta/ubicación; Static Threshold usa límites fijos que generan falsos positivos."
+        },
+        {
+          "termino": "ZDX Copilot",
+          "definicion": "Motor de IA/ML sobre la telemetría de ZDX que automatiza el análisis de causa raíz y guía la remediación para reducir el MTTR en soporte L1/L2."
+        },
+        {
+          "termino": "Page Fetch Time (PFT)",
+          "definicion": "Métrica de Web Probe que mide el tiempo total para cargar una página, incluyendo handshake SSL, conexión TCP, TTFB y TTLB."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_10_01",
+          "pregunta": "¿Qué ventaja arquitectónica diferencial tiene ZDX frente a las herramientas tradicionales de APM respecto a la instalación de agentes?",
+          "respuesta": "Reutiliza el Zscaler Client Connector ya desplegado para ZIA/ZPA, sin requerir agentes adicionales, plugins ni infraestructura virtual.",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Overview"
+        },
+        {
+          "id": "card_10_02",
+          "pregunta": "¿Cuáles son las dos familias de probes sintéticos que envía ZCC y qué pregunta responde cada una?",
+          "respuesta": "Web Probes (miden la app: ¿es la app?) y Cloud Path Probes (miden la red salto a salto: ¿es la red?).",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección User Experience Monitoring"
+        },
+        {
+          "id": "card_10_03",
+          "pregunta": "¿Cómo se calcula el ZDX Score de una hora específica?",
+          "respuesta": "Diseño pesimista: el puntaje de probe MÁS BAJO registrado en el intervalo de 60 minutos se convierte en el ZDX Score de esa hora.",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección Visualization and Reporting"
+        },
+        {
+          "id": "card_10_04",
+          "pregunta": "¿Por qué se prefieren las Dynamic Alerts basadas en Baselines sobre los Thresholds estáticos?",
+          "respuesta": "Porque los baselines dinámicos se adaptan a la latencia natural de cada ruta o ubicación geológica, evitando falsos positivos por límites estáticos.",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección Alerts and Rules"
+        },
+        {
+          "id": "card_10_05",
+          "pregunta": "¿Cuáles son los rangos de clasificación del ZDX Score (Good, Okay, Poor)?",
+          "respuesta": "Good: 66-100 (verde), Okay: 34-65 (ámbar) y Poor: 0-33 (rojo).",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Overview"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_10_01",
+          "enunciado": "Un usuario remoto en la oficina de Tokio reporta que su aplicación Microsoft Teams funciona muy lenta. Al revisar ZDX, el administrador observa que el Web Probe muestra un tiempo de respuesta de la app (TTFB) normal de 40 ms, pero el Cloud Path Probe muestra una pérdida de paquetes del 15% entre el ISP local y el Service Edge. ¿Qué componente es el responsable de la lentitud?",
+          "opciones": [
+            "El servidor de Microsoft Teams.",
+            "La red / ISP intermedio.",
+            "El motor de ZIdentity.",
+            "El controlador WFP de Windows."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Web Probes evalúa la aplicación (que responde normalmente), mientras que Cloud Path Probes identifica la pérdida de paquetes en el trayecto de red (ISP intermedio), aislando el problema en la red.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección User Experience Monitoring"
+        },
+        {
+          "id": "quiz_10_02",
+          "enunciado": "Durante 55 minutos de una hora, un usuario registró probes sintéticos perfectos con una puntuación de 95. Sin embargo, durante una sola ventana de 5 minutos, la conexión Wi-Fi doméstica cayó y el probe registró una puntuación de 12. ¿Cuál será el ZDX Score asignado a ese usuario para esa hora?",
+          "opciones": [
+            "95 (el valor máximo)",
+            "88 (el promedio ponderado)",
+            "12 (el valor más bajo)",
+            "50 (el valor medio)"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "El cálculo del ZDX Score es pesimista por diseño: el puntaje más bajo registrado en la ventana de una hora se asigna como la puntuación global de esa hora para no ocultar incidentes breves.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección Visualization and Reporting"
+        },
+        {
+          "id": "quiz_10_03",
+          "enunciado": "Con qué frecuencia envía por defecto el Zscaler Client Connector los probes sintéticos de ZDX hacia las aplicaciones monitoreadas?",
+          "opciones": [
+            "Cada 1 minuto",
+            "Cada 5 minutos",
+            "Cada 15 minutos",
+            "Cada 80 minutos"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "El ciclo continuo de polling de ZDX envía probes sintéticos desde el Client Connector hacia las aplicaciones cada 5 minutos por defecto.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección User Experience Monitoring"
+        },
+        {
+          "id": "quiz_10_04",
+          "enunciado": "Un ingeniero de Service Desk utiliza ZDX Copilot para analizar una oleada de tickets sobre lentitud en OneDrive. ¿Qué beneficio directo aporta esta herramienta impulsada por IA al equipo de soporte?",
+          "opciones": [
+            "Genera certificados de CA para inspección SSL.",
+            "Realiza análisis de causa raíz automático y proporciona recomendaciones de remediación guiada para reducir el MTTR.",
+            "Descarga e instala nuevos agentes en los endpoints automáticamente.",
+            "Modifica el orden de las reglas de Firewall en ZIA."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "ZDX Copilot procesa la telemetría agregada mediante modelos de IA/ML para automatizar el análisis de causa raíz y guiar la remediación, reduciendo significativamente el MTTR.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 10 — Monitoreo con ZDX, Sección ZDX Copilot"
+        }
+      ]
+    }
+  ]
+}

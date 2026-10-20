@@ -1,0 +1,180 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 4: Gestión de la plataforma core (Core Platform Management)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 4: Gestión de la plataforma core (Core Platform Management).",
+  "temas": [
+    {
+      "id": "tema_04_gestion_plataforma_core",
+      "titulo": "Módulo 4: Gestión de la plataforma core (Core Platform Management)",
+      "objetivos": [
+        "Analizar los mecanismos de integración de red en ZIA: Locations, Sub-Locations, Location Groups y tunelización mediante GRE e IPsec.",
+        "Comprender la arquitectura e inscripción del App Connector en ZPA, la gestión de Provisioning Keys y el modelo de conexión 'inside-out'.",
+        "Diferenciar entre ZPA Private Service Edge (ZPA PSE) y ZIA Private Service Edge (ZIA PSE) junto con sus mecanismos de alta disponibilidad (N+1, CARP, DSR).",
+        "Configurar reglas de Forwarding Control en ZIA y distinguir sus 4 casos de uso clave: Dedicated IP, GeoIP, Source IP Anchoring (SIPA) y Proxy Chaining.",
+        "Evaluar la arquitectura de DNS Control y DNS Security, sus 3 pilares de resolución y la mitigación de protocolos como QUIC mediante respuestas ServFail.",
+        "Examinar el framework unificado de automatización OneAPI y la centralización de autenticación mediante ZIdentity y OAuth 2.0."
+      ],
+      "resumen": "El Módulo 4 de la certificación Zscaler EDU-200/ZDTA profundiza en los componentes fundamentales de la arquitectura e infraestructura de Zscaler Internet Access (ZIA) y Zscaler Private Access (ZPA).\n\n1. Integración de Red en ZIA:\n- Location: Objeto que ancla el tráfico a una IP pública estática para aplicar políticas de autenticación, filtrado URL, firewall y control de ancho de banda.\n- Sub-Location: División lógica dentro del mismo túnel físico (GRE/IPsec) o identificada por encabezados X-Forwarded-For (XFF). Permite diferenciar políticas (ej. empleados vs. invitados) sin fragmentar el ancho de banda, el cual sigue disponible en la Location padre.\n- Location Group: Agrupación de Locations para simplificar RBAC y políticas, pudiendo ser Manual o Dinámico (basado en atributos).\n- Túneles GRE e IPsec: GRE encapsula tráfico sin cifrar hasta 1 Gbps (o 250 Mbps tras NAT) y destaca por su simplicidad sin intercambio de llaves. IPsec aporta seguridad completa (integridad, confidencialidad y autenticación) mediante IKEv2 a 400 Mbps por IP pública. Se aplica la mnemotecnia: IPsec = Seguridad; GRE = Velocidad/Simplicidad. Ambos preservan la visibilidad de la IP interna (pre-NAT) y deben configurarse siempre en pares primario/secundario para alta disponibilidad.\n\n2. App Connectors y Private Service Edges (ZPA):\n- Estructura ZPA: Por un lado, qué se protege (Applications -> Application Segment -> Segment Group); por otro, quién lo sirve (App Connector -> App Connector Group -> Server Group).\n- Modelo Inside-Out: El App Connector inicia únicamente túneles de salida hacia la nube de ZPA, sin escuchar conexiones entrantes, ocultando la red interna frente a escaneos. Los servidores destino ven las peticiones con la IP del App Connector.\n- Enrolamiento y Provisioning Keys: El enrolamiento requiere un certificado cliente TLS generado vía CSR y autenticado mediante una Provisioning Key (que debe protegerse como contraseña). El flujo es: Create Provisioning Key -> Deploy App Connector -> Configure Server Group. Para alta disponibilidad, los App Connectors deben desplegarse siempre en pares.\n- Private Service Edge (PSE): Se instala en el centro de datos del cliente para procesar tráfico localmente. ZPA PSE actúa como broker entre ZCC y App Connectors sin inspeccionar contenido. ZIA PSE realiza inspección completa de tráfico a internet e incluye redundancia N+1, CARP (failover activo-pasivo de LBs) y DSR (Direct Server Return).\n\n3. Forwarding Control (ZIA):\nSoporta hasta 1,024 reglas evaluadas secuencialmente (AND entre pestañas, OR dentro de la misma pestaña). Incluye 4 casos de uso principales para gestionar la IP de salida:\n- Dedicated IP: IP de egreso única y fija para servicios SaaS con listas blancas rígidas.\n- GeoIP: Asigna dinámicamente una IP del país del usuario para cumplir restricciones regionales.\n- SIPA (Source IP Anchoring): Ancla tráfico privado interno a través de ZPA App Connectors.\n- Proxy Chaining: Reenvía el tráfico inspeccionado a un proxy de terceros para análisis especializado.\n\n4. DNS Control y DNS Security:\nZscaler opera más de 150 centros de datos con Trusted DNS Resolvers (ZTR), reduciendo la latencia de resolución de 150 ms (hub-and-spoke) a 10 ms (local breakout). Cubre 3 pilares: Optimized Resolution, DNS Security (contra tunneling, exfiltración y NRODs) y DNS Filtering. Para suprimir protocolos que evaden el proxy (como QUIC/HTTP/3), la mejor práctica es bloquear peticiones DNS de tipo HTTPS devolviendo el código ServFail (RFC 6895).\n\n5. OneAPI y Automatización:\nReemplaza el modelo tradicional de endpoints dispersos por un framework unificado. Centraliza la autenticación en ZIdentity (acme.zslogin.net) para obtener tokens OAuth 2.0 con alcance (scope) validado por el gateway unificado OneAPI (api.zsapi.net), respetando los 5 principios RESTful.",
+      "conceptos": [
+        {
+          "termino": "Location vs. Sub-Location",
+          "definicion": "Location ancla tráfico a una IP estática pública para aplicar políticas. Sub-Location es una subdivisión lógica (vía XFF o rangos internos) para aplicar reglas diferenciadas sin perder el ancho de banda no utilizado del padre."
+        },
+        {
+          "termino": "GRE vs. IPsec",
+          "definicion": "GRE prioriza velocidad y simplicidad sin cifrado (hasta 1 Gbps). IPsec prioriza seguridad cifrando el tráfico mediante IKEv2 (400 Mbps por IP de origen). Ambos se despliegan en pares HA y conservan la IP interna."
+        },
+        {
+          "termino": "Modelo Inside-Out (App Connector)",
+          "definicion": "Arquitectura donde el App Connector abre túneles salientes hacia la nube de ZPA sin aceptar conexiones entrantes, haciendo invisible la infraestructura privada desde internet."
+        },
+        {
+          "termino": "ZPA PSE vs. ZIA PSE",
+          "definicion": "ZPA Private Service Edge es un broker de conexiones privadas que no inspecciona contenido. ZIA Private Service Edge es una instancia local que ejecuta inspección completa de seguridad web/SaaS."
+        },
+        {
+          "termino": "SIPA (Source IP Anchoring)",
+          "definicion": "Mecanismo de Forwarding Control que enruta tráfico hacia aplicaciones internas a través de App Connectors de ZPA para asegurar que la IP de origen provenga de una ubicación corporativa autorizada."
+        },
+        {
+          "termino": "ServFail para Bloqueo de QUIC",
+          "definicion": "Respuesta DNS estándar (RFC 6895) entregada al bloquear consultas DNS de tipo HTTPS para forzar a los clientes a realizar un fallback a TCP/443 e inspeccionar el tráfico."
+        },
+        {
+          "termino": "OneAPI",
+          "definicion": "Gateway unificado de automatización de Zscaler (api.zsapi.net) que valida tokens OAuth 2.0 emitidos por ZIdentity para simplificar la gestión API a través de todos los servicios."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_04_01",
+          "pregunta": "¿Qué ocurre con el ancho de banda no utilizado dentro de una Sub-Location en ZIA?",
+          "respuesta": "El ancho de banda no utilizado permanece disponible para la Location padre y otras Sub-Locations asociadas al mismo túnel.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZIA Network Integration"
+        },
+        {
+          "id": "card_04_02",
+          "pregunta": "¿Cuál es la regla mnemotécnica y la diferencia principal entre los túneles GRE e IPsec en Zscaler?",
+          "respuesta": "'IPsec = Seguridad, GRE = Velocidad/Simplicidad'. GRE no cifra tráfico y ofrece hasta 1 Gbps; IPsec cifra mediante IKEv2 hasta 400 Mbps por IP pública de origen.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZIA Network Integration"
+        },
+        {
+          "id": "card_04_03",
+          "pregunta": "¿Por qué el modelo 'inside-out' de los App Connectors en ZPA protege las aplicaciones privadas contra escaneos externos?",
+          "respuesta": "Porque los App Connectors solo inician conexiones de salida hacia la nube de ZPA y no escuchan conexiones entrantes, eliminando puertos abiertos en el perímetro.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZPA App Connectors"
+        },
+        {
+          "id": "card_04_04",
+          "pregunta": "¿Cuál es la diferencia fundamental entre un ZPA Private Service Edge y un ZIA Private Service Edge?",
+          "respuesta": "El ZPA PSE actúa como broker de conexiones sin inspeccionar el contenido de la aplicación; el ZIA PSE realiza inspección completa de seguridad de tráfico web/SaaS en el DC local.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección Private Service Edges"
+        },
+        {
+          "id": "card_04_05",
+          "pregunta": "¿Qué diferencia existe entre los casos de uso de Dedicated IP y Source IP Anchoring (SIPA) en Forwarding Control?",
+          "respuesta": "Dedicated IP asigna una IP de egreso estática para aplicaciones SaaS públicas; SIPA ancla la IP de origen para aplicaciones privadas internas enrutadas vía ZPA App Connectors.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección Forwarding Control"
+        },
+        {
+          "id": "card_04_06",
+          "pregunta": "¿Cómo se configura la política de DNS Control para suprimir el uso no inspeccionable del protocolo HTTP/3/QUIC?",
+          "respuesta": "Se bloquea el tipo de petición DNS 'HTTPS' devolviendo la respuesta de código de error ServFail (código 2), lo que obliga al cliente a reintentar por TCP estándar.",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección DNS Control"
+        },
+        {
+          "id": "card_04_07",
+          "pregunta": "¿Qué rol desempeña ZIdentity dentro del flujo de autenticación de OneAPI?",
+          "respuesta": "ZIdentity centraliza el proceso de registro del cliente API y la emisión del token OAuth 2.0 (acme.zslogin.net), el cual luego es validado por OneAPI (api.zsapi.net).",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección OneAPI"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_04_01",
+          "enunciado": "Una empresa comparte un único túnel GRE de 1 Gbps entre la red corporativa de empleados y la red de visitantes. El administrador crea una Sub-Location para los invitados con un límite de ancho de banda. Si los invitados no están utilizando su cuota asignada, ¿qué sucede con ese ancho de banda libre?",
+          "opciones": [
+            "Se pierde permanentemente debido a la asignación estática de la Sub-Location.",
+            "Permanece disponible para ser utilizado por la Location padre y los empleados corporativos.",
+            "Provoca un reajuste automático que reduce el ancho de banda del túnel GRE a 250 Mbps.",
+            "Se reasigna exclusivamente a las consultas de DNS Control."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "En ZIA, las Sub-Locations permiten segmentación lógica de políticas, pero el ancho de banda no consumido por una Sub-Location no se desperdicia: permanece disponible en el pool de la Location padre.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZIA Network Integration"
+        },
+        {
+          "id": "quiz_04_02",
+          "enunciado": "Un equipo de infraestructura debe elegir entre GRE e IPsec para conectar una sucursal con Zscaler. Buscan la máxima velocidad y simplicidad de configuración, disponiendo de una IP pública estática pre-NAT sin requerir cifrado en ese tramo. ¿Qué tecnología y rendimiento máximo por túnel deben seleccionar?",
+          "opciones": [
+            "IPsec con IKEv2 y rendimiento de hasta 400 Mbps.",
+            "GRE sin cifrado y rendimiento de hasta 1 Gbps.",
+            "IPsec con NAT-T y rendimiento de hasta 2 Gbps.",
+            "Z-Tunnel 1.0 con rendimiento ilimitado."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Según la mnemotecnia del curso ('IPsec = Seguridad, GRE = Velocidad/Simplicidad'), GRE no requiere intercambio de llaves de cifrado y ofrece un rendimiento de hasta 1 Gbps (frente a los 400 Mbps por IP de IPsec).",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZIA Network Integration"
+        },
+        {
+          "id": "quiz_04_03",
+          "enunciado": "Un administrador de ZPA genera una Provisioning Key para desplegar un nuevo grupo de App Connectors en un centro de datos. ¿Cuál es el orden secuencial correcto de los 3 pasos de despliegue recomendados por Zscaler?",
+          "opciones": [
+            "Deploy App Connector -> Configure Server Group -> Create Provisioning Key.",
+            "Configure Server Group -> Deploy App Connector -> Create Provisioning Key.",
+            "Create Provisioning Key -> Deploy App Connector -> Configure Server Group.",
+            "Deploy App Connector -> Create Provisioning Key -> Configure Server Group."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "El flujo estandarizado de despliegue en ZPA consta de 3 etapas secuenciales: primero se crea la Provisioning Key en el portal, luego se despliega el App Connector (que se autentica con dicha llave), y finalmente se configura el Server Group.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección ZPA App Connectors"
+        },
+        {
+          "id": "quiz_04_04",
+          "enunciado": "Una aplicación financiera interna requiere que el tráfico entrante provenga estrictamente de una dirección IP corporativa conocida cuando los usuarios remotos acceden a ella. ¿Qué funcionalidad de Forwarding Control en ZIA debe configurarse para cumplir este requisito sobre tráfico privado?",
+          "opciones": [
+            "Dedicated IP",
+            "GeoIP",
+            "Source IP Anchoring (SIPA)",
+            "Proxy Chaining"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "Source IP Anchoring (SIPA) es la función de Forwarding Control diseñada para anclar la IP de origen en accesos a aplicaciones internas privadas a través de App Connectors de ZPA. Dedicated IP y GeoIP se utilizan para tráfico saliente a internet/SaaS.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección Forwarding Control"
+        },
+        {
+          "id": "quiz_04_05",
+          "enunciado": "Para evitar que los usuarios utilicen navegadores modernos con protocolo HTTP/3 (QUIC) que evadan la inspección SSL del proxy, un ingeniero configura una regla de DNS Control. ¿Qué tipo de registro DNS debe bloquear y qué código de respuesta debe devolver?",
+          "opciones": [
+            "Tipo A / Código Refused",
+            "Tipo AAAA / Código NXDomain",
+            "Tipo HTTPS / Código ServFail (RFC 6895)",
+            "Tipo MX / Código NoError"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "La mejor práctica especificada en el Módulo 4 establece bloquear el tipo de petición DNS 'HTTPS' respondiendo con el código ServFail (código 2, RFC 6895), lo que invalida el descubrimiento de QUIC y fuerza al cliente a reintentar sobre TCP/443.",
+          "dificultad": "difícil",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección DNS Control"
+        },
+        {
+          "id": "quiz_04_06",
+          "enunciado": "Un desarrollador está migrando sus scripts de automatización antiguos al nuevo framework OneAPI de Zscaler. ¿Cuál es el dominio central del gateway OneAPI encargado de validar los tokens y aplicar políticas de tasa de solicitudes (rate limiting)?",
+          "opciones": [
+            "acme.zslogin.net",
+            "api.zsapi.net",
+            "gateway.zscaler.net",
+            "oneapi.zscloud.net"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "En el framework OneAPI, ZIdentity centraliza la autenticación en 'acme.zslogin.net', mientras que el gateway unificado de acceso y validación de tokens/cuotas es 'api.zsapi.net'.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 4 — Gestión de la plataforma core, Sección OneAPI"
+        }
+      ]
+    }
+  ]
+}

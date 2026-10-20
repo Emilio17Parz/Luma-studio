@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 11: Troubleshooting & Incident Response (Diagnóstico y Respuesta a Incidentes)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 11: Troubleshooting & Incident Response (Diagnóstico y Respuesta a Incidentes).",
+  "temas": [
+    {
+      "id": "tema_11_troubleshooting_e_incident_response",
+      "titulo": "Módulo 11: Troubleshooting & Incident Response (Diagnóstico y Respuesta a Incidentes)",
+      "objetivos": [
+        "Aplicar el árbol de diagnóstico Symptom -> Cause -> Root Cause (RCA) a través de las 4 categorías: Connectivity, Policy Enforcement, ZPA Application Access y Performance Bottlenecks.",
+        "Ejecutar procedimientos de respuesta a incidentes de seguridad para Malware/Phishing (cuarentena de dispositivos, bloqueo de dominios, ATP Page Risk Index > 35).",
+        "Gestionar investigaciones DLP utilizando Workflow Automation y el arco Detect -> Respond -> Prevent.",
+        "Monitorear el User Risk Score, gestionar reseteos forzados de credenciales y auditar accesos no autorizados.",
+        "Gestionar interrupciones de servicio utilizando el Zscaler Trust Portal, comunicaciones claras y workarounds temporales (failover de datacenter)."
+      ],
+      "resumen": "El Módulo 11 estructura las operaciones en dos grandes fases: Common Root Cause Analysis (troubleshooting reactivo) e Incident Response and Remediation (respuesta a incidentes de seguridad).\n\n1. Common Root Cause Analysis (RCA):\nOrganizado bajo el framework Symptom -> Cause -> Root Cause a través de 4 categorías:\n- Connectivity: Uso de ZDX Diagnostics (sesiones bajo demanda a cadencia de 1 min) y diferenciación entre ping/traceroute (foto fija reactiva) vs. ZDX Cloud Path (video continuo proactivo).\n- Policy Enforcement: Revisión del orden de reglas (top-down, first match), Admin Rank (pirámide 0-7) y Allow Cascading.\n- ZPA Application Access: Verificación de Application Segments (Exact Match vs. Multimatch) y salud del App Connector (umbrales duros: CPU < 75%, Memoria < 90%, máx 6,000 targets, reinicio automático por disco < 100 MB).\n- Performance Bottlenecks: Desglose de latencia por tramo (Client-Egress / Egress-App) y optimización de políticas.\n\n2. Incident Response and Remediation:\n- Malware/Phishing: La cuarentena de dispositivo es una acción de contención inmediata desde el ZCC Portal. Se aplican bloqueos de IOCs en 4 capas (DNS Control -> Firewall -> IPS -> ATP Page Risk Index con umbral 35). Se analizan alertas de Botnet/C2 (requiere 2 motores: ATP + Sandbox) y Ransomware (motor Malware Protection).\n- DLP Incident Investigation: Sigue el arco Detect -> Respond -> Prevent utilizando Zscaler Workflow Automation para gestionar el ciclo de vida del caso (Open -> Received -> Waiting Feedback -> Escalated -> Closed).\n- Account Compromise: Evaluación del User Risk Score (0-100), reseteos forzados de contraseña en ZIdentity y expiración de certificados cliente (365 días).\n- Service Disruptions: Monitoreo en trust.zscaler.com. Distingue entre Service Disruption (interrupción total) y Service Degradation (rendimiento reducido). El failover automático a DC secundario en ZCC ocurre solo ante inalcanzabilidad total del DC primario, no por degradación de latencia.",
+      "conceptos": [
+        {
+          "termino": "Framework Symptom -> Cause -> Root Cause",
+          "definicion": "Metodología estructurada de diagnóstico para bajar de un síntoma reportado por el usuario a la causa raíz mediante herramientas específicas de la plataforma."
+        },
+        {
+          "termino": "Cuarentena de Dispositivo (Device Quarantine)",
+          "definicion": "Acción de contención inmediata a nivel de ZCC que bloquea el acceso completo a ZIA y ZPA tras detectar un dispositivo comprometido."
+        },
+        {
+          "termino": "ATP Page Risk Index",
+          "definicion": "Índice de riesgo dinámico (umbral estándar de 35) que evalúa el contenido en tiempo real de una página web tras la inspección SSL para bloquear sitios maliciosos."
+        },
+        {
+          "termino": "Workflow Automation (DLP Cases)",
+          "definicion": "Módulo de gestión de casos que convierte violaciones DLP en incidentes con ciclo de vida (Open, Received, Waiting Feedback, Escalated, Closed)."
+        },
+        {
+          "termino": "User Risk Score",
+          "definicion": "Puntuación de 0 a 100 clasificada en Low, Medium, High y Critical que agrega comportamientos de riesgo y factores de infección de un usuario."
+        },
+        {
+          "termino": "Datacenter Failover en ZCC",
+          "definicion": "Conmutación automática de ZCC a un Data Center secundario que se dispara únicamente cuando el DC primario se vuelve inalcanzable (no ante mera latencia)."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_11_01",
+          "pregunta": "¿Cuáles son los umbrales duros de salud operativa para un ZPA App Connector?",
+          "respuesta": "CPU < 75%, Memoria < 90%, máximo 6,000 application targets y reinicio automático si el espacio en disco es < 100 MB.",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 10"
+        },
+        {
+          "id": "card_11_02",
+          "pregunta": "¿Qué valor de Page Risk Index en Advanced Threat Protection (ATP) se utiliza como umbral estándar para bloquear páginas maliciosas?",
+          "respuesta": "Un valor de Page Risk Index igual o mayor a 35.",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 17"
+        },
+        {
+          "id": "card_11_03",
+          "pregunta": "¿Qué motores de detección en ZIA se combinan para identificar y confirmar tráfico de Botnet / Command & Control (C2)?",
+          "respuesta": "Requiere la combinación de 2 motores: Advanced Threat Protection (ATP) y Cloud Sandbox.",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 18"
+        },
+        {
+          "id": "card_11_04",
+          "pregunta": "¿Bajo qué condición específica ejecuta ZCC un failover automático hacia el Data Center secundario (${SECONDARY_GATEWAY})?",
+          "respuesta": "Unicamente cuando el Data Center primario se vuelve inalcanzable por completo (no se dispara por alta latencia si sigue alcanzable).",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 27"
+        },
+        {
+          "id": "card_11_05",
+          "pregunta": "¿Cuál es la vigencia estándar de un certificado de dispositivo (Device Certificate) en Zscaler?",
+          "respuesta": "La validez estándar del certificado de dispositivo es de 365 días.",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 23"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_11_01",
+          "enunciado": "Un analista del SOC detecta que una laptop corporativa ha comenzado a emitir tráfico sospechoso hacia una IP de C2 conocida. Como primera medida de contención de emergencia antes de iniciar el análisis forense, ¿qué acción debe ejecutar en el portal de ZCC?",
+          "opciones": [
+            "Eliminar el usuario en SCIM.",
+            "Poner el dispositivo en Cuarentena (Isolate Compromised Device).",
+            "Modificar el Admin Rank del usuario a 7.",
+            "Deshabilitar la inspección SSL en el App Profile."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "La cuarentena de dispositivo es la acción de contención inmediata de primer nivel que corta el acceso a ZIA y ZPA para detener la propagación de la amenaza.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 16"
+        },
+        {
+          "id": "quiz_11_02",
+          "enunciado": "Un usuario reporta que el acceso a la aplicación interna de finanzas está caído. El administrador revisa el App Connector local y descubre que el proceso ZPA se ha reiniciado automáticamente. Al revisar las métricas de servidor Linux, ¿qué condición provocó el reinicio automático del conector?",
+          "opciones": [
+            "El uso de CPU alcanzó el 50%.",
+            "El espacio disponible en disco cayó por debajo de 100 MB.",
+            "Se registraron 1,000 objetivos de aplicación.",
+            "El puerto 443 recibió una consulta DNS ServFail."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Dentro de los umbrales de salud del App Connector, cuando el espacio libre en disco cae por debajo de 100 MB, el sistema ejecuta un reinicio automático por protección.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 10"
+        },
+        {
+          "id": "quiz_11_03",
+          "enunciado": "Durante una interrupción parcial de cable submarino, los usuarios remotos experimentan una latencia elevada (300 ms) hacia el Data Center primario de Zscaler, pero el nodo sigue respondiendo a las comprobaciones de salud. ¿Por qué ZCC no realiza el failover automático al Data Center secundario?",
+          "opciones": [
+            "Porque ZCC requiere reiniciar el sistema operativo para conmutar.",
+            "Porque el failover automático de ZCC responde únicamente a la inalcanzabilidad total del DC primario y no a la degradación de latencia.",
+            "Porque se requiere una licencia ZDX Advanced para activar el failover.",
+            "Porque el túnel cayó a Z-Tunnel 1.0."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "ZCC realiza failover automático solo si el DC primario queda inalcanzable. Un DC alcanzable pero lento es clasificado como 'Service Degradation' y requiere intervención manual o workaround de ruteo.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 27"
+        },
+        {
+          "id": "quiz_11_04",
+          "enunciado": "En la gestión de incidentes DLP con Workflow Automation, ¿cuál es la secuencia correcta de estados por los que pasa un caso durante su procesamiento?",
+          "opciones": [
+            "Open -> Received -> Waiting Feedback -> Escalated -> Closed",
+            "Pending -> Active -> Resolved -> Deleted",
+            "Initiated -> Approved -> Blocked -> Archived",
+            "Draft -> Under Review -> Expired -> Reopened"
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "Workflow Automation gestiona los casos de DLP mediante la máquina de estados: Open -> Received -> Waiting Feedback -> Escalated -> Closed.",
+          "dificultad": "difícil",
+          "fuente": "Módulo 11 — Troubleshooting & Incident Response, Lección 20"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 6: Configurando políticas DLP (Configuring DLP Policies)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 6: Configurando políticas DLP (Configuring DLP Policies).",
+  "temas": [
+    {
+      "id": "tema_06_politicas_dlp",
+      "titulo": "Módulo 6: Configurando políticas DLP (Configuring DLP Policies)",
+      "objetivos": [
+        "Identificar las 5 superficies protegidas por Inline DLP y las diferencias entre la clasificación orientada al contenido (Content-driven) y al contexto (Context-driven).",
+        "Diferenciar entre el uso de Exact Data Match (EDM) para datos estructurados e Indexed Document Match (IDM) para documentos indexados.",
+        "Configurar diccionarios DLP, motores (Engines) y utilizar la acción de respuesta 'Confirm' para alertas de sensibilidad media.",
+        "Analizar el rol de Cloud Access Security Broker (CASB) en el descubrimiento de Shadow IT y la gestión de aplicaciones sancionadas vs. no sancionadas.",
+        "Comprender el funcionamiento de Smart Browser Isolation, su modelo pixel-streamed y sus trigger conditions."
+      ],
+      "resumen": "El Módulo 6 abarca la protección de datos sensibles e interacciones web mediante tres tecnologías integradas: Data Loss Prevention (DLP Inline), Cloud Access Security Broker (CASB) y Smart Browser Isolation.\n\n1. Data Loss Prevention (DLP Inline):\nDLP protege 5 superficies clave: Web, Endpoint, Cloud, Mail y BYOD. Se basa en dos pilares de inspección:\n- Content-driven: Analiza el contenido real mediante patrones, expresiones regulares, Exact Data Match (EDM, para bases de datos estructuradas como tarjetas o registros) e Indexed Document Match (IDM, para huellas digitales de documentos completos).\n- Context-driven: Evalúa las circunstancias de la transferencia (identidad del usuario, seguridad del dispositivo, ubicación y horario).\nLas reglas combinan diccionarios (Predefined y Custom) dentro de DLP Engines. A diferencia de otras políticas, Web DLP ofrece la acción 'Confirm', que solicita al usuario una justificación de negocio antes de permitir la transferencia para archivos de sensibilidad media.\n\n2. Cloud Access Security Broker (CASB):\nCASB proporciona visibilidad y control sobre el uso de aplicaciones en la nube, dividiéndolas en Sanctioned (aprobadas) y Unsanctioned (no aprobadas, como ChatGPT en ciertas organizaciones). Permite el descubrimiento de Shadow IT combinando análisis inline y out-of-band para aplicar controles granulares de Upload, Download y Post.\n\n3. Smart Browser Isolation:\nProtege los endpoints al ejecutar el contenido web sospechoso en un navegador remoto en la nube de Zscaler. Entrega al usuario únicamente un flujo de píxeles (pixel-streamed) sin que el código activo o archivos ejecutables toquen el dispositivo local, creando un air-gap real. La política se evalúa mediante Trigger Conditions (cambios en el baseline, listas de denegación) que ejecutan Isolation Profiles.",
+      "conceptos": [
+        {
+          "termino": "Content-driven vs. Context-driven DLP",
+          "definicion": "Content-driven analiza el contenido del archivo (keywords, EDM, IDM); Context-driven analiza el entorno de la transferencia (usuario, dispositivo, ubicación, horario)."
+        },
+        {
+          "termino": "Exact Data Match (EDM)",
+          "definicion": "Técnica de inspección DLP basada en huellas de registros estructurados provenientes de bases de datos (ej. números de tarjeta de crédito, identificadores nacionales)."
+        },
+        {
+          "termino": "Indexed Document Match (IDM)",
+          "definicion": "Técnica de inspección DLP que crea huellas digitales (fingerprints) de documentos completos o plantillas no estructuradas para detectar copias o modificaciones parciales."
+        },
+        {
+          "termino": "Acción 'Confirm' (DLP)",
+          "definicion": "Acción intermedia de Web DLP que presenta una notificación emergente al usuario solicitando justificación de negocio antes de permitir el envío del archivo."
+        },
+        {
+          "termino": "Shadow IT Discovery (CASB)",
+          "definicion": "Proceso de identificación y catalogación de aplicaciones en la nube no sancionadas utilizadas por los empleados sin autorización explícita de TI."
+        },
+        {
+          "termino": "Smart Browser Isolation",
+          "definicion": "Tecnología que ejecuta sesiones web en contenedores aislados en la nube de Zscaler, transmitiendo solo píxeles al usuario para neutralizar exploits web y malware."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_06_01",
+          "pregunta": "¿Cuál es la diferencia de aplicación técnica entre Exact Data Match (EDM) e Indexed Document Match (IDM)?",
+          "respuesta": "EDM se utiliza para comparar datos estructurados de bases de datos (filas/columnas); IDM se utiliza para detectar coincidencias en documentos o formularios no estructurados completos.",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Data Loss Prevention"
+        },
+        {
+          "id": "card_06_02",
+          "pregunta": "¿Qué finalidad cumple la acción 'Confirm' dentro de una política de Web DLP?",
+          "respuesta": "Solicita al usuario una justificación explícita de negocio en pantalla antes de proceder con la transferencia, ideal para datos de sensibilidad media.",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Data Loss Prevention"
+        },
+        {
+          "id": "card_06_03",
+          "pregunta": "¿Cuáles son las 5 superficies que protege la solución de DLP de Zscaler?",
+          "respuesta": "Web, Endpoint, Cloud, Mail y BYOD.",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Data Loss Prevention"
+        },
+        {
+          "id": "card_06_04",
+          "pregunta": "¿Cómo distingue CASB entre una aplicación Sanctioned y una Unsanctioned?",
+          "respuesta": "Sanctioned es una aplicación aprobada oficialmente por la empresa que cumple con estándares de seguridad; Unsanctioned es una app no aprobada identificada como riesgo o Shadow IT.",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Cloud Access Security"
+        },
+        {
+          "id": "card_06_05",
+          "pregunta": "¿Por qué el modelo 'pixel-streamed' de Smart Browser Isolation protege al endpoint contra código malicioso?",
+          "respuesta": "Porque la página web se procesa en la nube de Zscaler y el usuario solo recibe imágenes rasterizadas de la sesión, impidiendo que scripts maliciosos se ejecuten localmente.",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Smart Browser Isolation"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_06_01",
+          "enunciado": "Un analista de DLP necesita configurar una regla para impedir la exfiltración de la base de datos de clientes exportada en CSV que contiene nombres, teléfonos y direcciones. ¿Qué técnica de clasificación de contenido es la más precisa para este caso?",
+          "opciones": [
+            "Indexed Document Match (IDM)",
+            "Exact Data Match (EDM)",
+            "Búsqueda por palabras clave difusas (Fuzzy Keywords)",
+            "Smart Browser Isolation"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Exact Data Match (EDM) está diseñado específicamente para comparar huellas digitales de datos estructurados tabulares (como exportaciones de bases de datos) reduciendo a cero los falsos positivos.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Data Loss Prevention"
+        },
+        {
+          "id": "quiz_06_02",
+          "enunciado": "En una política de Web DLP, se desea aplicar un control educativo para empleados que envían archivos con datos internos no críticos a socios externos. ¿Qué acción de política permite concientizar al usuario exigiendo justificación sin bloquear abruptamente el flujo de trabajo?",
+          "opciones": [
+            "Block",
+            "Allow",
+            "Confirm",
+            "Quarantine"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "La acción 'Confirm' interrumpe la carga para pedir una justificación de negocio al usuario, permitiendo completar el envío si confirma que se trata de un uso legítimo.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Web DLP Policies"
+        },
+        {
+          "id": "quiz_06_03",
+          "enunciado": "¿Qué combinación de mecanismos utiliza CASB para lograr una visibilidad completa de Shadow IT en la organización?",
+          "opciones": [
+            "CASB inline (en tiempo real) y CASB out-of-band (API sobre datos en reposo).",
+            "Unicamente túneles GRE de 1 Gbps.",
+            "Probes de Cloud Path de ZDX.",
+            "Cambios de contraseña en ZIdentity."
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "CASB combina el análisis inline (que intercepta el tráfico en tránsito) con CASB out-of-band (que se conecta vía API a los repositorios cloud en reposo) para descubrir y gobernar el uso de Shadow IT.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Cloud Access Security"
+        },
+        {
+          "id": "quiz_06_04",
+          "enunciado": "Para navegar en sitios web no clasificados o de alto riesgo sin exponer los equipos a descargas no deseadas, ¿qué tecnología crea un 'air-gap' remoto aislando completamente la ejecución del código web?",
+          "opciones": [
+            "Forwarding Control Proxy Chaining",
+            "Smart Browser Isolation",
+            "Tenancy Restrictions",
+            "ZPA Client Forwarding Policy"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Smart Browser Isolation procesa y ejecuta la sesión web dentro de un contenedor en la nube de Zscaler y retransmite únicamente los píxeles de la pantalla al navegador del cliente, estableciendo un air-gap real.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 6 — Configurando políticas DLP, Sección Smart Browser Isolation"
+        }
+      ]
+    }
+  ]
+}

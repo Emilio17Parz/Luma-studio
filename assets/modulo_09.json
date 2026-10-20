@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 9: Reporteo de seguridad y risk analytics (Security Reporting and Risk Analytics)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 9: Reporteo de seguridad y risk analytics (Security Reporting and Risk Analytics).",
+  "temas": [
+    {
+      "id": "tema_09_reporteo_y_risk_analytics",
+      "titulo": "Módulo 9: Reporteo de seguridad y risk analytics (Security Reporting and Risk Analytics)",
+      "objetivos": [
+        "Analizar los reportes de amenazas (Malware, Phishing, GenAI) y los reportes de incidentes DLP basados en los 3 drivers de pérdida de datos.",
+        "Comprender el funcionamiento del framework Risk360 y la cuantificación del riesgo en las 4 etapas de un breach.",
+        "Evaluar el uso de simulaciones Monte Carlo para traducir el riesgo técnico en exposición financiera potencial expresada en dólares.",
+        "Utilizar la generación de reportes ejecutivos (Board Slides, CISO PPTs) y el mapeo contra la matriz MITRE ATT&CK y controles NIST CSF."
+      ],
+      "resumen": "El Módulo 9 transforma los datos crudos de logs en analítica avanzada, tendencias y métricas ejecutivas para la toma de decisiones directivas.\n\n1. Security Reports:\nProporcionan visibilidad agregada sobre el panorama de amenazas (Malware, Phishing y GenAI Threats) respaldados por la investigación de ThreatLabz. Los DLP Incident Reports analizan la exfiltración considerando 3 drivers principales: Insider Threats (mal uso accidental o intencional), Generative AI Risks (pérdida de código o PII mediante herramientas como ChatGPT) y Cloud Misconfigurations (permisos excesivos en SaaS).\n\n2. Risk360 Framework:\nEs un marco holístico que evalúa continuamente más de 100-140 factores de riesgo mapeados a NIST y MITRE ATT&CK. Cuantifica el riesgo en una escala de 0 a 100 dividida en las 4 etapas de un breach:\n1. External Attack Surface (entrada del atacante)\n2. Lateral Propagation (movimiento lateral por falta de microsegmentación)\n3. Prevent Compromise (ocurrencia del compromiso)\n4. Data Loss (exfiltración de datos)\n\n3. Cuantificación Financiera y Reportes Ejecutivos:\nRisk360 utiliza simulaciones Monte Carlo para calcular la exposición financiera potencial ($) comparando la postura actual con y sin Zscaler. Facilita la comunicación directiva mediante la Reports Console, que genera Board Slides (en PDF/PPT), Attack Surface Reports y evaluaciones para cuestionarios de ciberseguros.",
+      "conceptos": [
+        {
+          "termino": "Threat Landscape Reports (ThreatLabz)",
+          "definicion": "Informes analíticos basados en la inteligencia de Zscaler que categorizan amenazas emergentes en Malware, Phishing y riesgos de Inteligencia Artificial Generativa (GenAI)."
+        },
+        {
+          "termino": "Drivers de Pérdida de Datos",
+          "definicion": "Los 3 factores principales de exfiltración moderna: Insider Threats, Generative AI Risks y Cloud Misconfigurations."
+        },
+        {
+          "termino": "Risk360 Framework",
+          "definicion": "Framework que mide el nivel de riesgo de la organización evaluando más de 100 factores a través de las 4 etapas de un ciberataque."
+        },
+        {
+          "termino": "Las 4 Etapas de un Breach (Risk360)",
+          "definicion": "Secuencia de evaluación del riesgo: 1. External Attack Surface, 2. Lateral Propagation, 3. Prevent Compromise, 4. Data Loss."
+        },
+        {
+          "termino": "Simulación Monte Carlo (Financial Risk)",
+          "definicion": "Modelo estadístico utilizado por Risk360 para traducir puntuaciones de riesgo técnico en estimaciones monetarias de pérdidas financieras potenciales."
+        },
+        {
+          "termino": "Board Slides / CISO Reporting",
+          "definicion": "Informes ejecutivos listos para juntas directivas que resumen el score de riesgo, tendencias de 90 días, factores críticos y alineación con MITRE ATT&CK."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_09_01",
+          "pregunta": "¿Cuáles son las 4 etapas de un breach que evalúa el framework Risk360 en orden secuencial?",
+          "respuesta": "1. External Attack Surface, 2. Lateral Propagation, 3. Prevent Compromise y 4. Data Loss.",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Risk360"
+        },
+        {
+          "id": "card_09_02",
+          "pregunta": "¿Cuáles son los 3 drivers principales de pérdida de datos identificados en los DLP Incident Reports?",
+          "respuesta": "Insider Threats, Generative AI Risks y Cloud Misconfigurations.",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Security Reports"
+        },
+        {
+          "id": "card_09_03",
+          "pregunta": "¿Qué técnica matemática utiliza Risk360 para traducir el riesgo de ciberseguridad en dólares de exposición financiera?",
+          "respuesta": "Utiliza simulaciones Monte Carlo para proyectar la exposición financiera potencial.",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Financial Risk"
+        },
+        {
+          "id": "card_09_04",
+          "pregunta": "¿En qué ventana de tiempo evalúa Risk360 la tendencia del Risk Score frente al promedio de la industria (peer average)?",
+          "respuesta": "Evalúa la tendencia histórica durante los últimos 90 días.",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Risk360"
+        },
+        {
+          "id": "card_09_05",
+          "pregunta": "¿Qué valor aporta el mapeo de Risk360 contra la matriz MITRE ATT&CK?",
+          "respuesta": "Visualiza la cobertura de controles de seguridad clasificados por color (Configured, Misconfigured, Not Configured) a través de las tácticas de ataque.",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Board-ready Reporting"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_09_01",
+          "enunciado": "Un CISO debe presentar el estado de ciberseguridad ante la junta directiva y requiere justificar la inversión en microsegmentación mostrando el riesgo de desplazamiento no autorizado tras la entrada de un atacante. ¿En cuál de las 4 etapas de Risk360 se refleja este riesgo específico?",
+          "opciones": [
+            "External Attack Surface",
+            "Lateral Propagation",
+            "Prevent Compromise",
+            "Data Loss"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "La etapa 'Lateral Propagation' mide el riesgo de que una amenaza ya dentro de la red pueda moverse entre sistemas debido a la falta de controles de microsegmentación o acceso basado en mínimo privilegio.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Risk360"
+        },
+        {
+          "id": "quiz_09_02",
+          "enunciado": "Durante una revisión de fugas de información, el equipo de seguridad detecta que varios ingenieros han estado pegando fragmentos de código fuente confidencial en un chatbot de inteligencia artificial público. ¿En qué driver de pérdida de datos se clasifica este incidente?",
+          "opciones": [
+            "Generative AI Risks",
+            "Cloud Misconfigurations",
+            "P2P File Sharing",
+            "DNS Tunneling"
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "El envío no regulado de código o datos sensibles a herramientas de IA generativa públicas (como ChatGPT) representa la categoría de 'Generative AI Risks'.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Security Reports"
+        },
+        {
+          "id": "quiz_09_03",
+          "enunciado": "Para respaldar la solicitud de renovación de la póliza de ciberseguro, el departamento de riesgo requiere cuantificar el impacto monetario estimado en caso de una brecha por vulnerabilidades conocidas no corregidas. ¿Qué herramienta de Zscaler proporciona esta métrica basada en simulaciones Monte Carlo?",
+          "opciones": [
+            "Risk360 Financial Risk Module",
+            "ZIA Web Insights",
+            "ZDX Copilot",
+            "NSS Syslog Streaming"
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "El módulo de Financial Risk dentro de Risk360 aplica simulaciones Monte Carlo para convertir hallazgos técnicos en dólares de exposición financiera potencial para la junta directiva y aseguradoras.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Financial Risk"
+        },
+        {
+          "id": "quiz_09_04",
+          "enunciado": "Al revisar el tablero de Risk360, un administrador nota que su organización tiene un Risk Score de 42. ¿En qué rango de clasificación de riesgo se encuentra la empresa?",
+          "opciones": [
+            "Low (0-25)",
+            "Medium (26-50)",
+            "High (51-75)",
+            "Critical (76-100)"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "La escala de Risk360 define los siguientes rangos: 0-25 Low, 26-50 Medium, 51-75 High y 76-100 Critical. Por lo tanto, un score de 42 corresponde a la categoría Medium.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 9 — Reporteo de seguridad y risk analytics, Sección Risk Score Trend"
+        }
+      ]
+    }
+  ]
+}

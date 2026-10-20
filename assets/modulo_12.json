@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 12: Integraciones y optimización (Integrations and Optimization)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 12: Integraciones y optimización (Integrations and Optimization).",
+  "temas": [
+    {
+      "id": "tema_12_integraciones_y_optimizacion",
+      "titulo": "Módulo 12: Integraciones y optimización (Integrations and Optimization)",
+      "objetivos": [
+        "Aplicar la regla de oro de la gestión de IdP: editar el IdP existente en lugar de recrearlo para evitar la invalidación de políticas.",
+        "Diseñar la estrategia de despliegue en 4 fases para actualizaciones de Zscaler Client Connector y configurar contraseñas de Unattended Mode.",
+        "Configurar Zscaler Client Connector for VDI utilizando el parámetro onboard=0 en la imagen dorada.",
+        "Gestionar el mantenimiento proactivo de App Connectors y la asignación de Version Profiles (Previous Default vs. New Release).",
+        "Optimizar reglas de políticas ZIA/ZPA y configurar la integración con SIEMs mediante Cloud-to-Cloud Log Streaming.",
+        "Realizar revisiones de postura de seguridad (Security Posture Reviews) utilizando el Configuration Risk Report."
+      ],
+      "resumen": "El Módulo 12 cierra el curso EDU-200 centrándose en el mantenimiento proactivo, la optimización continua y la madurez operacional.\n\n1. Gestión de IdP y Migración:\nRegla de oro: Al migrar o actualizar un Proveedor de Identidad (IdP), se debe EDITAR el IdP existente y NUNCA recrearlo. Recrear un IdP genera nuevas entidades que invalidan las políticas ZPA/ZIA existentes y duplican grupos. El mapping de SAML NameID y SCIM Username debe mantenerse idéntico.\n\n2. Actualización de ZCC y VDI Multi-Sesión:\nEl despliegue de versiones de ZCC sigue una progresión geométrica en 4 fases: 1. IT Testing (25-50 usuarios) -> 2. Expanded IT Testing (100-150) -> 3. Testing with End Users (200-300) -> 4. Full Deployment (lotes de 1,000 usuarios). Para entornos VDI compartidos (Citrix/VMware), se utiliza 'Zscaler Client Connector for VDI' especificando el parámetro 'onboard=0' en la imagen dorada (golden image) para evitar que las VMs clonadas compartan un ID de dispositivo estático.\n\n3. Mantenimiento de Infraestructura Privada:\nPara mantener alta disponibilidad, un grupo debe conservar al menos 2 App Connectors saludables. Las actualizaciones deben programarse secuencialmente (un conector a la vez). Se utilizan Version Profiles: 'Previous Default' para grupos críticos y 'New Release' para grupos que requieren funciones recientes.\n\n4. Optimización de Políticas y SIEM:\nSe deprecian reglas sin tráfico analizando el dashboard Policy Usage. Para SIEM, Cloud-to-Cloud Log Streaming permite enviar logs directamente a Splunk Cloud, Sentinel o S3 sin VMs dedicadas. Las revisiones de postura (Security Posture Reviews) utilizan el Configuration Risk Report para medir el riesgo de configuración.",
+      "conceptos": [
+        {
+          "termino": "Regla de Oro de Migración de IdP",
+          "definicion": "Principio operativo que exige EDITAR el registro del IdP existente en lugar de borrarlo y recrearlo, evitando la desincronización y pérdida de políticas."
+        },
+        {
+          "termino": "Estrategia de Despliegue de ZCC en 4 Fases",
+          "definicion": "Metodología de actualización gradual de agentes: 1. IT Testing (25-50), 2. Expanded IT (100-150), 3. End Users (200-300), 4. Full Deployment (lotes de 1,000)."
+        },
+        {
+          "termino": "onboard=0 (ZCC for VDI)",
+          "definicion": "Parámetro obligatorio al instalar ZCC en la imagen dorada de VDI para asegurar que cada VM clonada realice un onboarding independiente sin duplicar Device IDs."
+        },
+        {
+          "termino": "Version Profile (App Connectors)",
+          "definicion": "Ajuste que asigna builds específicos de software a grupos de conectores ('Previous Default' para máxima estabilidad crítica o 'New Release' para características nuevas)."
+        },
+        {
+          "termino": "Cloud-to-Cloud Log Streaming",
+          "definicion": "Mecanismo de exportación directa de logs vía HTTPS saliente hacia SIEMs en la nube (Splunk Cloud, Sentinel, S3) sin requerir máquinas virtuales intermedias."
+        },
+        {
+          "termino": "Configuration Risk Report",
+          "definicion": "Informe de postura que evalúa la configuración de políticas y el uso de funciones de la plataforma entregando una puntuación de riesgo y recomendaciones."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_12_01",
+          "pregunta": "¿Por qué la regla de oro de la migración de IdP exige editar el IdP existente en lugar de crear uno nuevo?",
+          "respuesta": "Porque crear un IdP nuevo genera entidades e identificadores separados, lo que invalida todas las reglas de política ZPA y ZIA asociadas al IdP anterior.",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 2"
+        },
+        {
+          "id": "card_12_02",
+          "pregunta": "¿Qué parámetro es obligatorio incluir al instalar Zscaler Client Connector en la imagen dorada (golden image) para un entorno VDI multi-sesión?",
+          "respuesta": "El parámetro 'onboard=0', para evitar que la plantilla quede atada a un identificador de dispositivo único.",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 4"
+        },
+        {
+          "id": "card_12_03",
+          "pregunta": "¿Cuáles son las 4 fases y tamaños de grupo recomendados para la estrategia de actualización de ZCC?",
+          "respuesta": "Fase 1: IT Testing (25-50), Fase 2: Expanded IT (100-150), Fase 3: End Users (200-300) y Fase 4: Full Deployment (lotes de 1,000).",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 3"
+        },
+        {
+          "id": "card_12_04",
+          "pregunta": "¿Qué Version Profile se debe asignar a los App Connector Groups de misión crítica en producción?",
+          "respuesta": "El Version Profile 'Previous Default', para garantizar la máxima estabilidad probada antes de adoptar nuevos builds.",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 5"
+        },
+        {
+          "id": "card_12_05",
+          "pregunta": "¿Qué ventaja ofrece Cloud-to-Cloud Log Streaming frente a la instalación tradicional de appliances NSS en máquinas virtuales?",
+          "respuesta": "Permite el envío directo de logs a SIEMs cloud (Splunk Cloud, Sentinel, S3) vía HTTPS sin requerir el despliegue ni mantenimiento de VMs locales.",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 9"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_12_01",
+          "enunciado": "Una empresa está cambiando su IdP de Okta a Microsoft Entra ID. El nuevo administrador elimina el IdP antiguo de la consola de Zscaler y crea una nueva entrada para Entra ID. Inmediatamente, los usuarios pierden el acceso a todas las aplicaciones privadas en ZPA. ¿A qué se debe esta interrupción?",
+          "opciones": [
+            "A que ZPA requiere licencias de Cloud Sandbox para Entra ID.",
+            "A que al eliminar y recrear el IdP se borraron las asociaciones de identidad de las Access Policies existentes.",
+            "A que Entra ID solo soporta el protocolo HTTP CONNECT.",
+            "A que el Z-Tunnel cayo a versión 1.0."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Al recrear el IdP en lugar de editar el existente, se generan nuevos IDs internos de entidad, desvinculando todas las políticas de acceso que hacían referencia a los atributos del IdP anterior.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 2"
+        },
+        {
+          "id": "quiz_12_02",
+          "enunciado": "Un ingeniero de virtualización prepara un catálogo de Citrix DaaS multi-sesión. Al clonar la imagen dorada en 50 máquinas virtuales, descubre que todas las VMs intentan registrarse con el mismo nombre de dispositivo en Zscaler. ¿Qué error cometió durante la instalación del cliente?",
+          "opciones": [
+            "No activó la inspección SSL en el Forwarding Profile.",
+            "Omitió el parámetro 'onboard=0' al ejecutar el instalador de ZCC for VDI en la golden image.",
+            "Asignó el Version Profile 'New Release' al grupo.",
+            "No configuró un túnel IPsec en IKEv2."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "El parámetro 'onboard=0' evita que el instalador realice el enrolamiento de dispositivo en la plantilla dorada, permitiendo que cada VM clonada genere su propio onboarding independiente.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 4"
+        },
+        {
+          "id": "quiz_12_03",
+          "enunciado": "Al planificar el despliegue masivo de una nueva versión GA de ZCC para 10,000 usuarios, el equipo de operaciones define el cronograma de rollout. ¿Cuál es el tamaño máximo recomendado de lote de usuarios para la Fase 4 (Full Deployment)?",
+          "opciones": [
+            "100 usuarios",
+            "300 usuarios",
+            "1,000 usuarios",
+            "5,000 usuarios"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "La metodología estandarizada de Zscaler establece que la Fase 4 (Full Deployment) debe realizarse en lotes de 1,000 usuarios progresivos para monitorear el comportamiento.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 3"
+        },
+        {
+          "id": "quiz_12_04",
+          "enunciado": "Para evitar la sobrecarga de mantenimiento de máquinas virtuales locales y transmitir los logs de ZIA directamente hacia un bucket de Amazon S3, ¿qué función de exportación se debe configurar?",
+          "opciones": [
+            "NSS VM Syslog",
+            "Cloud-to-Cloud Log Streaming",
+            "LSS Hyper-V Appliance",
+            "OneAPI Rate Limiter"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Cloud-to-Cloud Log Streaming es la funcionalidad que permite conectar la canalización de datos de Zscaler directamente con servicios cloud como Amazon S3, Splunk Cloud o Sentinel sin infraestructura de VMs intermedia.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 12 — Integrations and Optimization, Lección 9"
+        }
+      ]
+    }
+  ]
+}

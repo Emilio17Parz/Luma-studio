@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 8: Revisando dashboard y logs (Reviewing Dashboard and Logs)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 8: Revisando dashboard y logs (Reviewing Dashboard and Logs).",
+  "temas": [
+    {
+      "id": "tema_08_dashboards_y_logs",
+      "titulo": "Módulo 8: Revisando dashboard y logs (Reviewing Dashboard and Logs)",
+      "objetivos": [
+        "Comprender la arquitectura del flujo de datos de logs (Service Edge -> Logging Plane -> Log Routers -> Nanolog Clusters -> NSS/LSS -> SIEM).",
+        "Aplicar el flujo de trabajo recurrente Filter -> Search -> Analyze sobre los distintos ZIA Insights Logs.",
+        "Utilizar el framework de las 5 preguntas (Who, What, When, How, Why) para la investigación de accesos en ZPA Events Diagnostics.",
+        "Auditar ZIdentity Audit Logs (retención de 6 meses, almacenamiento regional EE. UU./UE) para detectar accesos administrativos no autorizados.",
+        "Configurar los 5 Logging Modes de ZCC (Error, Warn, Info, Debug, Verbose) y gestionar notificaciones emergentes.",
+        "Comparar las capacidades de resiliencia de Nanolog Streaming Service (NSS, con buffer de 1 hora) frente a Log Streaming Service (LSS, sin buffer)."
+      ],
+      "resumen": "El Módulo 8 organiza la observabilidad de la plataforma clasificando los registros por componente de origen (ZIA, ZPA, ZIdentity, ZCC) y mediante mecanismos transversales de exportación (Log Streaming).\n\n1. Flujo de Logging y ZIA Logs:\nEl tráfico inspeccionado en los Public Service Edges envía sus datos al Logging Plane, pasando por Log Routers hacia los Nanolog Clusters (almacenamiento comprimido y seguro). ZIA proporciona la metodología Filter -> Search -> Analyze sobre 6 tipos de Insights Logs (Web, Mobile, Firewall, DNS, Tunnel y SaaS Security). Se distingue entre Insight View (gráficas visuales) y Logs View (registros tabulares).\n\n2. ZPA Logs:\nSe analizan en Events Diagnostics mediante el framework de las 5 preguntas de Zero Trust:\n- Who? (identidad, grupo, posture)\n- What? (segmentos de aplicación, puertos, protocolos)\n- When? (timestamp)\n- How? (permiso otorgado o bloqueado)\n- Why? (regla de política o falla de postura coincidente)\n\n3. ZIdentity Audit Logs:\nRegistran acciones administrativas y cambios de configuración ('quién hizo qué y cuándo'). Tienen un periodo de retención garantizado de 6 meses y cumplen normativas de residencia de datos (almacenamiento en EE. UU. o la UE). Permiten detectar anomalías como 'impossible travel' (logins simultáneos desde países lejanos).\n\n4. ZCC Logs:\nEl agente soporta 5 modos de registro (Error, Warn, Info, Debug y Verbose para Android). Los cambios de modo son por sesión salvo que se fijen en el portal. Maneja 6 tipos de notificaciones emergentes (Default, Service Status, App Updates, ZIA, ZPA Reauthentication y Critical).\n\n5. Log Streaming (NSS vs. LSS):\nPermite el reenvío de logs a SIEMs externos (Splunk, Sentinel, etc.):\n- NSS (Nanolog Streaming Service): Transmite logs de ZIA. Incluye un buffer en memoria de hasta 1 hora en caso de desconexión con el SIEM, retransmitiendo los logs perdidos al restablecerse.\n- LSS (Log Streaming Service): Transmite logs de ZPA ejecutándose sobre un App Connector. NO posee buffer; si se pierde la conexión ZPA-App Connector, los registros generados durante el corte se pierden permanentemente. En el portal sin LSS, la actividad de usuarios se conserva durante 14 días rodantes.",
+      "conceptos": [
+        {
+          "termino": "Nanolog Clusters",
+          "definicion": "Clusters de almacenamiento seguro y altamente optimizados donde se indexan y comprimen los registros de tráfico generados por la nube de Zscaler."
+        },
+        {
+          "termino": "Filter -> Search -> Analyze Workflow",
+          "definicion": "Metodología estructurada de diagnóstico en ZIA para acotar el volumen de datos, encontrar eventos específicos y extraer conclusiones operativas."
+        },
+        {
+          "termino": "Framework de las 5 Preguntas (ZPA)",
+          "definicion": "Modelo de investigación para logs de ZPA que responde a Who (quién), What (qué app), When (cuándo), How (resultado) y Why (regla aplicada)."
+        },
+        {
+          "termino": "ZIdentity Audit Logs",
+          "definicion": "Registros de auditoría administrativa que capturan cambios de configuración y sesiones de gestión con una retención de 6 meses."
+        },
+        {
+          "termino": "NSS (Nanolog Streaming Service) Buffering",
+          "definicion": "Capacidad de NSS para almacenar en memoria hasta 1 hora de logs de ZIA durante cortes de conectividad con el SIEM, reproduciéndolos al reconectarse."
+        },
+        {
+          "termino": "LSS (Log Streaming Service) Retención",
+          "definicion": "Servicio de streaming para ZPA que corre sobre App Connectors sin buffer; sin LSS, el portal conserva los logs de actividad durante 14 días rodantes."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_08_01",
+          "pregunta": "¿Cuáles son las 5 preguntas del framework de investigación de logs en ZPA?",
+          "respuesta": "Who? (Identidad/Posture), What? (App/Puerto), When? (Timestamp), How? (Allowed/Denied) y Why? (Política/Razón).",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección ZPA Logs"
+        },
+        {
+          "id": "card_08_02",
+          "pregunta": "¿Cuál es la diferencia crítica de resiliencia entre NSS (ZIA) y LSS (ZPA) ante una pérdida de conexión con el SIEM?",
+          "respuesta": "NSS cuenta con un buffer de hasta 1 hora en memoria que retransmite logs perdidos; LSS no posee buffer y los logs de ZPA durante el corte se pierden permanentemente.",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección Log Streaming"
+        },
+        {
+          "id": "card_08_03",
+          "pregunta": "¿Cuál es el tiempo de retención de los logs de actividad de usuario de ZPA en el portal sin configurar LSS?",
+          "respuesta": "Los logs de actividad de usuario y estado en ZPA se conservan durante 14 días rodantes (14-day rolling).",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección Log Streaming"
+        },
+        {
+          "id": "card_08_04",
+          "pregunta": "¿Qué periodo de retención garantizado poseen los ZIdentity Audit Logs y en qué regiones se pueden almacenar?",
+          "respuesta": "Tienen un periodo de retención de 6 meses y pueden almacenarse en nodos de Estados Unidos o la Unión Europea.",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección ZIdentity Audit Logs"
+        },
+        {
+          "id": "card_08_05",
+          "pregunta": "¿Persisten los cambios en los Logging Modes de ZCC de forma indefinida en el endpoint del usuario?",
+          "respuesta": "No. Los cambios en los Logging Modes de ZCC son efectivos únicamente durante la sesión activa, salvo que se fije el modo por defecto en los App Profiles del portal.",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección ZCC Logs"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_08_01",
+          "enunciado": "Durante un mantenimiento programado, la conexión de red entre el colector SIEM local y el servicio ZIA se interrumpe durante 45 minutos. ¿Qué ocurrirá con los registros de navegación web generados durante ese intervalo una vez que se restablezca el enlace?",
+          "opciones": [
+            "Los registros se perderán permanentemente ya que los Service Edges no almacenan tráfico.",
+            "El servicio NSS utilizará su buffer de memoria (de hasta 1 hora) para retransmitir automáticamente los logs perdidos al SIEM.",
+            "Los logs se enviarán únicamente si el usuario tenía activado el modo Debug en ZCC.",
+            "Se requerirá restaurar un snapshot manual de Nanolog desde el portal de administración."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "NSS (Nanolog Streaming Service) incluye un mecanismo de resiliencia con buffer de hasta 1 hora en memoria que almacena y retransmite los logs de ZIA al SIEM al recuperar la conectividad.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección Log Streaming"
+        },
+        {
+          "id": "quiz_08_02",
+          "enunciado": "Un equipo de SOC investiga un posible incidente de compromiso de cuenta administrativa. Al revisar los ZIdentity Audit Logs, observan dos inicios de sesión exitosos con la misma cuenta con 10 minutos de diferencia: uno en Madrid y otro en Tokio. ¿Cómo se conoce este indicador de amenaza?",
+          "opciones": [
+            "Credential Spraying",
+            "Impossible Travel",
+            "Policy Cascade Error",
+            "Domain Fronting"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "'Impossible Travel' ocurre cuando se registran autenticaciones desde ubicaciones geográficas distantes en un intervalo de tiempo físicamente imposible de recorrer, indicando robo o uso indebido de credenciales.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección ZIdentity Audit Logs"
+        },
+        {
+          "id": "quiz_08_03",
+          "enunciado": "Un administrador desea auditar los intentos de acceso bloqueados a las aplicaciones privadas de la empresa durante las últimas 3 semanas desde la consola web, sin contar con un servidor SIEM configurado. ¿Por qué no podrá revisar eventos de hace 20 días en el portal?",
+          "opciones": [
+            "Porque los logs de ZPA en el portal sin LSS solo se conservan durante 14 días rodantes.",
+            "Porque los logs de ZPA requieren una licencia Advanced Cloud Firewall.",
+            "Porque ZPA elimina los registros bloqueados de inmediato por privacidad.",
+            "Porque se requiere reiniciar el App Connector cada 7 días para extender el historial."
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "Sin LSS (Log Streaming Service), los logs de actividad y estado de usuario en ZPA se retienen en el portal únicamente por 14 días rodantes; para conservar registros por periodos mayores se debe exportar vía LSS a un SIEM.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección Log Streaming"
+        },
+        {
+          "id": "quiz_08_04",
+          "enunciado": "Al realizar el troubleshooting de un problema intermitente de tunelización en una laptop corporativa, el técnico cambia el Logging Mode de ZCC a 'Debug'. ¿Qué ocurrirá con este nivel de registro cuando el usuario reinicie la sesión en el equipo?",
+          "opciones": [
+            "Se mantendrá en 'Debug' de forma permanente hasta que se desinstale el agente.",
+            "Volverá automáticamente al nivel de registro por defecto configurado en el App Profile.",
+            "Cambiará al modo 'Verbose' exclusivo para Windows.",
+            "Desactivará de inmediato las notificaciones de seguridad ZIA."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Los cambios manuales en los Logging Modes de ZCC son temporales y se aplican solo a la sesión activa; al reiniciar o cerrar sesión, se restablece el modo predeterminado definido en la política del App Profile.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 8 — Revisando dashboard y logs, Sección ZCC Logs"
+        }
+      ]
+    }
+  ]
+}

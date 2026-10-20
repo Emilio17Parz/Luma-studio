@@ -1,0 +1,156 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 5: Entendiendo las políticas de ZIA (Understanding ZIA Policies)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 5: Entendiendo las políticas de ZIA (Understanding ZIA Policies).",
+  "temas": [
+    {
+      "id": "tema_05_politicas_zia",
+      "titulo": "Módulo 5: Entendiendo las políticas de ZIA (Understanding ZIA Policies)",
+      "objetivos": [
+        "Comprender la arquitectura del Cloud Firewall Zero Trust de ZIA y las 6 capas de contexto que evalúa antes de aplicar una política.",
+        "Diferenciar entre Firewall Filtering Policy y NAT Control Policy, reconociendo por qué NAT no soporta inspección de Capa 7.",
+        "Configurar políticas de Bandwidth Control y File Type Control según prioridades del negocio.",
+        "Evaluar el orden de precedencia entre Cloud App Control y URL Filtering, y la función del modificador 'Allow Cascading to URL Filtering'.",
+        "Analizar el flujo de inspección TLS/SSL (Forward SSL Proxy / MITM), la gestión de cadenas de certificados, fases de despliegue y mitigación del protocolo QUIC.",
+        "Configurar controles de Advanced Threat Protection (ATP), Malware Protection y Cloud Sandbox con AI Instant Verdict."
+      ],
+      "resumen": "El Módulo 5 aborda las políticas de seguridad de Zscaler Internet Access (ZIA), las cuales reemplazan los controles perimetrales tradicionales mediante decisiones contextuales basadas en la nube.\n\n1. Firewall Control:\nEl Zero Trust Firewall de ZIA evalúa 6 capas de contexto (usuario/carga de trabajo, postura del dispositivo, aplicación, ubicación, IPS y DNS). Se dividen en:\n- Firewall Filtering Policy: Filtra tráfico no-web hasta Capa 7. Sus acciones son Allow, Block/Drop (silencioso), Block/ICMP y Block/Reset (TCP/RST). Requiere licencia Advanced Cloud Firewall para reglas basadas en identidad de usuario.\n- NAT Control Policy: Traducción de destino que opera estrictamente en Capa 4 (no soporta L7 porque debe actuar en el primer paquete antes de ver el payload).\n- DNS Control Policy e IPS Control Policy (con soporte de sintaxis Snort para firmas personalizadas).\n\n2. Bandwidth y File Type Control:\nPermite clasificar el tráfico en clases (ej. Social Media vs Business Critical) para evitar la saturación del enlace corporativo. File Type Control identifica archivos mediante Magic Bytes, MIME Type y Extensión.\n\n3. URL y Cloud App Control:\nCloud App Control evalúa 18 categorías de aplicaciones SaaS y tiene prioridad por defecto sobre URL Filtering. Si Cloud App Control permite un acceso, URL Filtering no se evalúa salvo que se active el interruptor 'Allow Cascading to URL Filtering'. Incluye Tenancy Restrictions para permitir el acceso a instancias SaaS corporativas mientras se bloquean cuentas personales.\n\n4. Inspección TLS/SSL:\nDado que >90% del tráfico web está encriptado, la inspección es un prerequisito para 8 servicios críticos (DLP, ATP, Sandbox, CASB, etc.). ZIA actúa como Forward SSL Proxy (MITM), estableciendo dos conexiones independientes y emitiendo certificados dinámicos firmados por una Intermediate CA temporal (que vive 14 días y se rota cada 7 días). Para suprimir el protocolo HTTP/3/QUIC (que usa UDP y evada la inspección), la mejor práctica es bloquear QUIC en el firewall para forzar un fallback transparente a TCP/HTTPS 443.\n\n5. Advanced Threat Protection (ATP), Malware Protection y Sandbox:\nATP bloquea tráfico C2 (Command & Control), botnets y phishing. Sandbox utiliza IA para brindar un AI Instant Verdict (bloqueo inmediato si el score de IA > 90), previniendo infecciones de 'paciente cero' mediante cuarentena previa a la detonación.",
+      "conceptos": [
+        {
+          "termino": "Zero Trust Firewall (ZIA)",
+          "definicion": "Cortafuegos en la nube que integra 6 capas de contexto (usuario, postura, app, ubicación, IPS, DNS) para tomar decisiones de acceso sin depender de la IP/puerto."
+        },
+        {
+          "termino": "NAT Control Policy vs. Firewall Filtering",
+          "definicion": "NAT Control realiza traducciones en Capa 4 sobre el primer paquete. Firewall Filtering realiza inspección profunda hasta Capa 7 permitiendo reglas basadas en usuario y app."
+        },
+        {
+          "termino": "Allow Cascading to URL Filtering",
+          "definicion": "Configuración que obliga a evaluar las reglas de URL Filtering incluso si el tráfico ya fue permitido previamente por Cloud App Control."
+        },
+        {
+          "termino": "Forward SSL Proxy (MITM)",
+          "definicion": "Mecanismo mediante el cual ZIA intercepta la conexión HTTPS, valida el certificado servidor real y entrega un certificado spoofed generado on-the-fly al cliente para inspeccionar el payload."
+        },
+        {
+          "termino": "Bloqueo del Protocolo QUIC",
+          "definicion": "Regla de firewall que bloquea el tráfico UDP/443 de QUIC para forzar a las aplicaciones a utilizar HTTP/HTTPS estándar sobre TCP/443, permitiendo la inspección SSL."
+        },
+        {
+          "termino": "AI Instant Verdict (Cloud Sandbox)",
+          "definicion": "Capacidad del Sandbox de ZIA que utiliza modelos de aprendizaje automático para predecir si un archivo desconocido es malicioso (score > 90) y bloquearlo al instante sin esperar la detonación completa."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_05_01",
+          "pregunta": "¿Por qué la política de NAT Control en ZIA no soporta reglas basadas en aplicaciones de Capa 7?",
+          "respuesta": "Porque NAT Control debe aplicarse inmediatamente en el primer paquete de la conexión, antes de que el payload de Capa 7 sea visible.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Firewall Rules"
+        },
+        {
+          "id": "card_05_02",
+          "pregunta": "¿Cuál es la diferencia de comportamiento en red entre las acciones Block/Drop y Block/Reset en Firewall Filtering?",
+          "respuesta": "Block/Drop descarta los paquetes en silencio pudiendo causar retransmisiones; Block/Reset responde explícitamente con un TCP RST cerrando la conexión de inmediato.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Firewall Rules"
+        },
+        {
+          "id": "card_05_03",
+          "pregunta": "¿Qué ocurre si se habilita la opción 'Allow Cascading to URL Filtering' en ZIA?",
+          "respuesta": "Permite que las peticiones web aprobadas por Cloud App Control continúen evaluándose secuencialmente contra las reglas de URL Filtering para aplicar controles adicionales.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección URL y Cloud App Control"
+        },
+        {
+          "id": "card_05_04",
+          "pregunta": "¿Cuál es la vida útil y la frecuencia de rotación de la Intermediate CA temporal generada en memoria para la inspección SSL MITM de ZIA?",
+          "respuesta": "Tiene una vida útil de 14 días y se rota automáticamente cada 7 días en la autoridad central de Zscaler.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección TLS/SSL Inspection"
+        },
+        {
+          "id": "card_05_05",
+          "pregunta": "¿Por qué es una mejor práctica recomendada por Zscaler bloquear el protocolo QUIC en el firewall corporativo?",
+          "respuesta": "Porque QUIC utiliza UDP y no permite la inspección SSL estándar basada en TCP; al bloquearlo, los clientes realizan un fallback transparente a TCP/443.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección TLS/SSL Inspection"
+        },
+        {
+          "id": "card_05_06",
+          "pregunta": "¿Qué umbral de score de IA activa un bloqueo inmediato en Cloud Sandbox mediante la función AI Instant Verdict?",
+          "respuesta": "Un score de predicción de IA mayor a 90 activa un bloqueo inmediato como amenaza de alta confianza.",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Sandbox Policy"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_05_01",
+          "enunciado": "Un usuario intenta conectarse a un servidor FTP externo. La política de Firewall Filtering de ZIA bloquea la solicitud mediante la acción 'Block/Reset'. ¿Qué comportamiento observará el usuario en su aplicación cliente?",
+          "opciones": [
+            "El cliente quedará esperando una respuesta hasta que expire el tiempo de espera (timeout) por falta de respuesta.",
+            "El cliente recibirá inmediatamente un paquete TCP RST que cerrará la conexión de forma explícita.",
+            "El cliente recibirá una respuesta ICMP Port Unreachable indicando que el puerto está cerrado.",
+            "La conexión se redirigirá automáticamente a una página de aislamiento en la nube."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "A diferencia de Block/Drop (que descarta silenciosamente los paquetes), la acción Block/Reset envía un paquete TCP RST al cliente, forzando un cierre visible e inmediato de la sesión.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Firewall Rules"
+        },
+        {
+          "id": "quiz_05_02",
+          "enunciado": "Una organización desea permitir el uso de Microsoft 365 para la cuenta corporativa oficial, pero necesita impedir que los empleados inicien sesión en sus cuentas personales de OneDrive desde las laptops de la empresa. ¿Qué característica de ZIA se debe configurar?",
+          "opciones": [
+            "Source IP Anchoring (SIPA)",
+            "Tenancy Restrictions",
+            "Allow Cascading to URL Filtering",
+            "Bandwidth Classes"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Tenancy Restrictions es la funcionalidad de ZIA que inserta encabezados HTTP específicos para distinguir el tenant corporativo permitido de las instancias SaaS personales no autorizadas.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección URL y Cloud App Control"
+        },
+        {
+          "id": "quiz_05_03",
+          "enunciado": "Durante la fase de prueba de inspección SSL, varios usuarios reportan que una aplicación nativa de escritorio falla al conectar, mientras que la versión web funciona correctamente. El análisis de paquetes revela que la app cierra la conexión tras recibir el certificado de Zscaler. ¿Cuál es la causa raíz más probable?",
+          "opciones": [
+            "El servidor DNS devolvió una respuesta ServFail.",
+            "La aplicación utiliza Certificate Pinning con certificados hard-coded.",
+            "El túnel GRE ha caído a Z-Tunnel 1.0.",
+            "Se superó el límite de 1,024 reglas de Forwarding Control."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "El Certificate Pinning ocurre cuando las aplicaciones esperan un certificado específico incrustado en su código; al recibir el certificado generado por el proxy MITM de Zscaler, rechazan la conexión. La solución es configurar un bypass de inspección SSL para dicha app.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección TLS/SSL Inspection"
+        },
+        {
+          "id": "quiz_05_04",
+          "enunciado": "Un administrador de seguridad configura la política de Cloud Sandbox para analizar archivos ejecutables desconocidos. Para evitar la infección de tipo 'paciente cero', ¿qué acción de primera vez debe seleccionar?",
+          "opciones": [
+            "Allow and Scan",
+            "Allow and Do Not Scan",
+            "Quarantine",
+            "Bypass Sandbox"
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "La acción 'Quarantine' retiene la entrega del archivo al usuario hasta que la detonación y el análisis del Sandbox confirmen que el archivo es seguro, impidiendo la infección de 'paciente cero'.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Sandbox Policy"
+        },
+        {
+          "id": "quiz_05_05",
+          "enunciado": "¿Qué licencia específica se requiere en ZIA para poder crear reglas de Firewall Control condicionadas por usuarios o grupos específicos?",
+          "opciones": [
+            "Licencia básica de ZIA",
+            "Licencia Advanced Cloud Firewall",
+            "Licencia ZPA Private Service Edge",
+            "Licencia ZDX Advanced"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Mientras que las reglas por ubicación e IP están disponibles en la licencia estándar, la inclusión de criterios basados en identidades de usuario/grupo dentro de Firewall Control exige la licencia Advanced Cloud Firewall.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 5 — Entendiendo las políticas de ZIA, Sección Firewall Rules"
+        }
+      ]
+    }
+  ]
+}

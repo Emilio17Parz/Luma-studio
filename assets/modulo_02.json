@@ -1,0 +1,184 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 2: Gestión de usuarios (User Management)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 2: Gestión de usuarios (User Management).",
+  "temas": [
+    {
+      "id": "tema_02_gestion_usuarios",
+      "titulo": "Módulo 2: Gestión de usuarios (User Management)",
+      "objetivos": [
+        "Diferenciar claramente entre Autenticación (AuthN) y Autorización (AuthZ) dentro de la arquitectura Zero Trust.",
+        "Comprender el funcionamiento de los estándares de federación de identidad: SAML 2.0, OAuth 2.0, OIDC y el protocolo de aprovisionamiento SCIM 2.0.",
+        "Analizar el rol de ZIdentity como servicio unificado de identidad para ZIA, ZPA y ZDX, y sus 7 capacidades clave.",
+        "Identificar los límites del sistema y grupos predefinidos no editables en la gestión de usuarios (máximo 1,024 grupos por usuario).",
+        "Configurar controles de acceso administrativo mediante RBAC, Sign-on Policies, Password Policies y MFA (FIDO2, Grace Period, Multi-Factor Bypass).",
+        "Examinar la estructura, campos y periodo de retención (6 meses) de los Audit Logs administrativos."
+      ],
+      "resumen": "El Módulo 2 de la certificación Zscaler EDU-200/ZDTA aborda la gestión moderna de identidades y accesos administrativos centrada en la plataforma unificada ZIdentity. En el modelo Zero Trust Exchange, el acceso nunca se otorga por la ubicación de red o el rango de direcciones IP del usuario; cada solicitud se autentica y evalúa individualmente contra políticas contextuales explícitas.\n\nLa gestión de identidades se apoya en estándares abiertos de federación:\n1. SAML 2.0 (Security Assertion Markup Language): Estándar basado en XML utilizado para el Single Sign-On (SSO) entre el Proveedor de Identidad (IdP, como Microsoft Entra ID u Okta) y el Proveedor de Servicios (SP, Zscaler). En la primera autenticación, SAML permite el aprovisionamiento Just-In-Time (JIT).\n2. OAuth 2.0 y OIDC (OpenID Connect): OAuth 2.0 gestiona la autorización delegada a APIs mediante JSON Web Tokens (JWT) con el formato de scope 'Zscaler Cloud Name :: Org ID :: API Role'. OIDC añade la capa de autenticación sobre OAuth 2.0 entregando un ID Token. Cabe destacar que AD FS solo soporta SAML y no OIDC.\n3. SCIM 2.0 (System for Cross-domain Identity Management): Protocolo que automatiza el aprovisionamiento, actualización y desaprovisionamiento continuo de usuarios y grupos. Zscaler actúa respondiendo a consultas de cliente SCIM desde el IdP (como Azure/Entra ID). El ciclo de sincronización se ejecuta aproximadamente cada 40 minutos basándose en deltas (comparación GET y ejecución de create/update/delete).\n\nZIdentity centraliza la identidad a través de ZIA, ZPA y ZDX ofreciendo 7 capacidades clave: SSO fluido, MFA activado por defecto, gestión de roles RBAC, aprovisionamiento SCIM, autosincronización/JIT, acceso administrativo basado en IP/geolocalización y visibilidad de Audit Logs. ZIdentity opera como el motor de identidad underlying, mientras que el Experience Center es la interfaz de administración.\n\nEn cuanto a los límites del sistema, un usuario puede pertenecer a un máximo de 1,024 grupos. Existen grupos predefinidos no editables como Zscaler Global Administrators, Dynamic Group Administrators, Dynamic Group Registered Domains, Dynamic Group Guest Domains y Zscaler Emergency Access. Los atributos se dividen en User Attributes (donde Display Name y Primary Email son requeridos) y Session Attributes.\n\nEl control de acceso administrativo (RBAC) define permisos a nivel de rol con 4 niveles: Full, View Only, Restricted View y None. Se diferencia entre Administrative Entitlements (permisos para administrar un servicio) y End User Entitlements (permisos para utilizar el servicio). Las políticas de acceso se dividen en Sign-on Policies (que restringen el acceso al portal por ubicaciones IP de confianza) y Password Policies (reglas con valores específicos de examen: longitud mínima 8 caracteres, bloqueo tras 10 intentos fallidos, prohibición de reusar las últimas 5 contraseñas y expiración a los 365 días).\n\nPara Multi-Factor Authentication (MFA), ZIdentity lo requiere por defecto para administradores y soporta FIDO2 para autenticación passwordless. Existen 3 mecanismos para flexibilizar MFA: Multi-Factor Bypass (exención temporal de 8 horas a 5 días), Grace Period (7 días para usuarios de nuevo ingreso) y la opción de deshabilitar la exigencia de MFA si el IdP externo ya lo aplica. Por último, los Audit Logs administrativos registran acciones de configuración, gestión de usuarios y sesiones, conservándose durante 6 meses con opción de exportación a CSV.",
+      "conceptos": [
+        {
+          "termino": "Autenticación (AuthN) vs. Autorización (AuthZ)",
+          "definicion": "AuthN confirma la identidad del usuario (quién es), mientras que AuthZ determina los recursos y acciones permitidos según las políticas configuradas (qué puede hacer)."
+        },
+        {
+          "termino": "ZIdentity",
+          "definicion": "Servicio de identidad unificado de Zscaler que centraliza la autenticación, SSO, aprovisionamiento y entitlements a través de los pilares ZIA, ZPA y ZDX."
+        },
+        {
+          "termino": "SAML 2.0 (Security Assertion Markup Language)",
+          "definicion": "Estándar abierto basado en XML que permite el intercambio de datos de autenticación y autorización entre un Proveedor de Identidad (IdP) y un Proveedor de Servicios (SP/Zscaler) para habilitar Single Sign-On (SSO)."
+        },
+        {
+          "termino": "SCIM 2.0 (System for Cross-domain Identity Management)",
+          "definicion": "Protocolo de aprovisionamiento automatizado que sincroniza usuarios, grupos y cambios de estado (creación, actualización y desaprobación) entre el IdP y Zscaler mediante deltas cada ~40 minutos."
+        },
+        {
+          "termino": "OIDC (OpenID Connect) y OAuth 2.0",
+          "definicion": "OAuth 2.0 gestiona la autorización delegada de APIs mediante tokens JWT. OIDC es la capa de autenticación construida sobre OAuth 2.0 que valida la identidad del usuario mediante un ID Token."
+        },
+        {
+          "termino": "RBAC (Role-Based Access Control)",
+          "definicion": "Modelo donde los permisos administrativos se asignan a roles definidos (Full, View Only, Restricted View, None) en lugar de otorgarse directamente a usuarios individuales."
+        },
+        {
+          "termino": "Audit Logs (ZIdentity)",
+          "definicion": "Registros detallados de auditoría que capturan cambios de configuración, acciones de usuarios y sesiones administrativas, con un periodo de retención de 6 meses."
+        },
+        {
+          "termino": "Grace Period (MFA)",
+          "definicion": "Periodo de gracia de 7 días otorgado a nuevos usuarios en ZIdentity para completar la inscripción de sus factores de autenticación antes de bloquear el acceso."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_02_01",
+          "pregunta": "¿Cuál es la diferencia conceptual fundamental entre Autenticación y Autorización en el modelo Zero Trust?",
+          "respuesta": "La Autenticación (AuthN) verifica la identidad del usuario ('quién es'), mientras que la Autorización (AuthZ) evalúa la política contextual para determinar a qué recursos específicos tiene permiso de acceder ('qué puede hacer').",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Identity Fundamentals"
+        },
+        {
+          "id": "card_02_02",
+          "pregunta": "¿Cuál es el límite máximo de grupos a los que puede pertenecer un único usuario en Zscaler?",
+          "respuesta": "Un usuario individual puede pertenecer a un máximo de 1,024 grupos de usuarios.",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección User Management (Experience Center)"
+        },
+        {
+          "id": "card_02_03",
+          "pregunta": "¿Con qué frecuencia se ejecuta el ciclo de sincronización delta de SCIM entre el IdP y Zscaler?",
+          "respuesta": "El ciclo de sincronización SCIM se ejecuta aproximadamente cada 40 minutos para procesar cambios mediante deltas (GET de comparación y acciones create/update/delete).",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección SCIM"
+        },
+        {
+          "id": "card_02_04",
+          "pregunta": "¿Cuáles son los valores estándar de la política de contraseñas de ZIdentity examinados en el curso?",
+          "respuesta": "Longitud mínima de 8 caracteres, bloqueo tras 10 intentos fallidos, prohibición de reusar las últimas 5 contraseñas y expiración máxima a los 365 días.",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Sign-on & Password Policies"
+        },
+        {
+          "id": "card_02_05",
+          "pregunta": "¿Cuál es el periodo de retención de los Audit Logs administrativos en ZIdentity y en qué formato se pueden exportar?",
+          "respuesta": "Tienen un periodo de retención de 6 meses y se pueden exportar en formato de archivo .csv.",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Audit Logs"
+        },
+        {
+          "id": "card_02_06",
+          "pregunta": "¿En qué se diferencian Administrative Entitlements de End User Entitlements en ZIdentity?",
+          "respuesta": "Administrative Entitlements otorgan roles de administración (como Super Admin) para gestionar la plataforma, mientras que End User Entitlements otorgan permisos de uso final de un servicio (ZIA, ZPA, ZDX).",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección RBAC"
+        },
+        {
+          "id": "card_02_07",
+          "pregunta": "¿Qué diferencia existe entre SAML JIT (Just-In-Time) y SCIM respecto a la gestión del ciclo de vida del usuario?",
+          "respuesta": "SAML JIT crea la cuenta del usuario en el momento exacto de su primer inicio de sesión; SCIM mantiene una sincronización continua automatizada para crear, actualizar y desaprovisionar usuarios.",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Ideas Clave"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_02_01",
+          "enunciado": "Un administrador de seguridad intenta configurar federación de identidad basada en OpenID Connect (OIDC) utilizando Microsoft AD FS local como IdP. Sin embargo, la integración no funciona. ¿A qué se debe este problema?",
+          "opciones": [
+            "Zscaler solo permite OIDC si se utiliza Z-Tunnel 1.0.",
+            "AD FS no soporta nativamente el protocolo OIDC, soportando únicamente SAML.",
+            "OIDC requiere licencias avanzadas de ZPA que no están activadas.",
+            "AD FS requiere un servidor SCIM intermediario para procesar tokens JWT."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Tal como especifican los documentos del Módulo 2, mientras que otros IdPs como Okta o PingOne soportan tanto SAML como OIDC, Active Directory Federation Services (AD FS) únicamente soporta el estándar SAML y no OIDC.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Ejemplos de IdP"
+        },
+        {
+          "id": "quiz_02_02",
+          "enunciado": "Durante una auditoría de contraseñas en ZIdentity, se revisa la política personalizada de contraseñas administrativas. ¿Cuál de los siguientes parámetros representa una configuración válida y examinada según las especificaciones de Zscaler?",
+          "opciones": [
+            "Longitud mínima de 6 caracteres y bloqueo tras 3 intentos fallidos.",
+            "Longitud mínima de 8 caracteres, bloqueo tras 10 intentos fallidos y expiración a los 365 días.",
+            "Bloqueo de reutilización de las últimas 20 contraseñas y expiración cada 30 días.",
+            "Longitud mínima de 12 caracteres sin bloqueo por intentos fallidos."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "La política estándar revisada en el Módulo 2 establece una longitud mínima de 8 caracteres, 10 intentos fallidos antes de desactivar la cuenta, bloqueo del reúso de las últimas 5 contraseñas y expiración a los 365 días.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Sign-on & Password Policies"
+        },
+        {
+          "id": "quiz_02_03",
+          "enunciado": "Una organización está contratando a 50 nuevos empleados. Para evitar interrumpir sus actividades durante la primera semana mientras configuran sus métodos de autenticación multifactor (MFA), el administrador desea otorgarles tiempo suficiente para completar su registro. ¿Qué función de ZIdentity debe utilizar?",
+          "opciones": [
+            "Multi-Factor Bypass de 30 días.",
+            "Grace Period de 7 días.",
+            "Deshabilitar 'Enforce Zscaler Admin MFA' de forma permanente.",
+            "Asignar el rol predefinido Zscaler Emergency Access."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "ZIdentity incluye la opción de 'Grace Period', la cual concede exactamente 7 días a los usuarios recién creados para registrar sus factores de MFA antes de exigir la verificación obligatoria.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección MFA"
+        },
+        {
+          "id": "quiz_02_04",
+          "enunciado": "Un equipo de operaciones de seguridad (SOC) detecta en los registros que una cuenta de administrador realizó cambios críticos de política a las 2:00 AM. Al investigar la auditoría en 'Administration > Admin Management > Audit Logs', ¿cuál es el tiempo máximo hacia atrás que podrán revisar estos eventos antes de que sean depurados?",
+          "opciones": [
+            "30 días.",
+            "90 días.",
+            "6 meses.",
+            "12 meses."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "Los Audit Logs de ZIdentity tienen un periodo de retención garantizado de 6 meses (180 días) y pueden exportarse en formato CSV para archivado externo o cumplimiento normativo.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección Audit Logs"
+        },
+        {
+          "id": "quiz_02_05",
+          "enunciado": "En la arquitectura de ZIdentity, ¿cuál es el formato exacto del 'scope claim' en un token JWT generado para la autorización delegada en OAuth 2.0?",
+          "opciones": [
+            "Username :: Domain :: Role",
+            "Zscaler Cloud Name :: Org ID :: API Role",
+            "Tenant ID :: Service Name :: Admin Rank",
+            "User ID :: IdP Issuer :: Entitlement"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "El estándar de Zscaler especifica que la estructura de la pretensión de alcance (scope claim) dentro del token JWT de OAuth 2.0 sigue rigurosamente el formato: 'Zscaler Cloud Name :: Org ID :: API Role'.",
+          "dificultad": "difícil",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección OAuth 2.0 y OIDC"
+        },
+        {
+          "id": "quiz_02_06",
+          "enunciado": "Un administrador intenta modificar directamente los miembros del grupo de usuarios 'Zscaler Global Administrators' desde la pantalla de grupos de usuarios en el Experience Center. ¿Por qué el sistema no le permite editar este grupo?",
+          "opciones": [
+            "Porque la cuenta del administrador carece de licencia Advanced Firewall.",
+            "Porque es un grupo de usuarios predefinido por el sistema y no es editable.",
+            "Porque se debe realizar únicamente mediante una llamada API de OneAPI.",
+            "Porque el usuario ya superó el límite de 1,024 grupos."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Zscaler cuenta con varios grupos de usuarios predefinidos no editables, entre los que se incluyen Zscaler Global Administrators, Dynamic Group Administrators, Dynamic Group Registered Domains, Dynamic Group Guest Domains y Zscaler Emergency Access.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 2 — Gestión de usuarios, Sección User Management (Experience Center)"
+        }
+      ]
+    }
+  ]
+}

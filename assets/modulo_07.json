@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 7: Implementando políticas ZPA (Implementing ZPA Policies)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 7: Implementando políticas ZPA (Implementing ZPA Policies).",
+  "temas": [
+    {
+      "id": "tema_07_politicas_zpa",
+      "titulo": "Módulo 7: Implementando políticas ZPA (Implementing ZPA Policies)",
+      "objetivos": [
+        "Diseñar Access Policies en ZPA aplicando los 12 criterios contextuales y las acciones Allow, Block y Conditional.",
+        "Implementar la mejor práctica del patrón de 2 reglas para la comprobación de postura (Posture Check).",
+        "Configurar Client Forwarding Policy (CFP) y evaluar sus 3 acciones (Forward to ZPA, Only Forward Allowed Applications, Bypass ZPA).",
+        "Diferenciar el impacto de Authentication Timeout frente a Idle Connection Timeout dentro de la Timeout Policy."
+      ],
+      "resumen": "El Módulo 7 aborda la gobernanza de accesos privados en Zscaler Private Access (ZPA) a través de tres marcos de políticas fundamentales:\n\n1. Access Policy:\nControla quién accede a qué aplicación bajo qué condiciones. Las reglas combinan criterios mediante lógica AND entre 12 variables contextuales (Application Segments, SAML/SCIM Attributes, Client Types, Device Posture, Country Code, User Risk, etc.). Soporta 3 acciones: Allow, Block y Conditional (que exige autenticación step-up o verificaciones adicionales vía ZIdentity).\n- Patrón de 2 reglas para Posture Check: Se aplica como mejor práctica primero una Regla 1 de Bloqueo (Block) con lógica OR para cualquier dispositivo que no pase las verificaciones (enviando un mensaje explicativo), seguida de una Regla 2 de Permitir (Allow) con lógica AND que autoriza solo a los dispositivos que cumplen el 100% de los requisitos.\n\n2. Client Forwarding Policy (CFP):\nDetermina cómo el agente ZCC reenvía el tráfico hacia ZPA. Se evalúa de arriba hacia abajo (top-down, first-match). Incluye 3 acciones:\n- Forward to ZPA (Default): Reenvía todas las solicitudes coincidentes con Application Segments a la nube de ZPA. La decisión de acceso se procesa en la nube y los intentos denegados quedan registrados en los logs diagnósticos.\n- Only Forward Allowed Applications: Solo reenvía el tráfico de las aplicaciones a las que el usuario tiene acceso explícito según la Access Policy. Las aplicaciones no autorizadas quedan ocultas localmente en el agente (bypass local sin log de denegados).\n- Bypass ZPA: Excluye el tráfico de aplicaciones específicas de ZPA por completo para ser procesado localmente.\n\n3. Timeout Policy:\nRegula el ciclo de vida de las sesiones activas:\n- Authentication Timeout: Exige que el usuario vuelva a ingresar credenciales tras transcurrir un intervalo definido (default 7 días). Para aplicaciones críticas de infraestructura de autenticación (Active Directory, LDAP, IdPs), la mejor práctica es configurar 'Never' para no interrumpir el flujo de autenticación.\n- Idle Connection Timeout: Cierra la sesión tras un periodo de inactividad de red sin exigir reautenticación completa.",
+      "conceptos": [
+        {
+          "termino": "ZPA Access Policy",
+          "definicion": "Conjunto de reglas evaluadas con lógica AND que autorizan o deniegan el acceso a segmentos de aplicaciones privadas según contexto e identidad."
+        },
+        {
+          "termino": "Patrón de 2 Reglas (Posture Check)",
+          "definicion": "Mejor práctica de ZPA que coloca una regla inicial de bloqueo (OR) para dispositivos no conformes y una regla posterior de acceso (AND) para dispositivos con postura verificada."
+        },
+        {
+          "termino": "Client Forwarding Policy (CFP)",
+          "definicion": "Política que dicta al Zscaler Client Connector si debe tunelizar, omitir o filtrar localmente el tráfico destinado a aplicaciones privadas."
+        },
+        {
+          "termino": "Only Forward Allowed Applications",
+          "definicion": "Acción de CFP que descarga al agente la lista de aplicaciones permitidas del usuario, ocultando las no autorizadas y realizando un bypass local sin enviar tráfico a la nube."
+        },
+        {
+          "termino": "Authentication Timeout vs. Idle Connection Timeout",
+          "definicion": "Authentication Timeout fuerza al usuario a reautenticarse en el IdP; Idle Connection Timeout cierra conexiones inactivas por tiempo sin exigir nuevas credenciales."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_07_01",
+          "pregunta": "¿Cómo se combinan los criterios seleccionados dentro de una misma regla de Access Policy en ZPA?",
+          "respuesta": "Se evalúan utilizando lógica booleana AND; todos los criterios configurados dentro de la regla deben cumplirse simultáneamente.",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Access Policy"
+        },
+        {
+          "id": "card_07_02",
+          "pregunta": "¿En qué consiste el patrón de 2 reglas recomendado para verificar el Device Posture en ZPA?",
+          "respuesta": "La Regla 1 bloquea (Block) con lógica OR si falla cualquier verificación (mostrando mensaje explicativo); la Regla 2 permite (Allow) con lógica AND solo si todas las verificaciones son exitosas.",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Access Policy"
+        },
+        {
+          "id": "card_07_03",
+          "pregunta": "¿Qué ventaja operativa ofrece la acción 'Only Forward Allowed Applications' en la Client Forwarding Policy?",
+          "respuesta": "Oculta las aplicaciones no autorizadas en el agente local y las procesa con bypass local, evitando enviar tráfico no autorizado a la nube de ZPA.",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Client Forwarding Policy"
+        },
+        {
+          "id": "card_07_04",
+          "pregunta": "¿Cuál es el valor por defecto del Authentication Timeout en ZPA y cuál es la recomendación para servidores Active Directory/LDAP?",
+          "respuesta": "El valor por defecto es de 7 días. Para servidores de infraestructura de autenticación (AD/LDAP), la recomendación es configurar 'Never' (sin expiración).",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Timeout Policy"
+        },
+        {
+          "id": "card_07_05",
+          "pregunta": "¿Cuál es la diferencia de efecto entre Authentication Timeout e Idle Connection Timeout?",
+          "respuesta": "Authentication Timeout exige que el usuario reingrese sus credenciales de IdP; Idle Connection Timeout solo finaliza la conexión inactiva sin exigir reautenticación.",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Timeout Policy"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_07_01",
+          "enunciado": "Un administrador de ZPA desea configurar una Access Policy para restringir el acceso al servidor de nóminas. Exige que el usuario pertenezca al grupo de Finanzas, esté en un dispositivo corporativo verificado y se conecte desde un país autorizado. ¿Qué lógica de evaluación aplicará la regla entre estos criterios?",
+          "opciones": [
+            "Lógica OR: si cumple cualquiera de los tres criterios, se otorga el acceso.",
+            "Lógica AND: debe cumplir estrictamente los tres criterios de forma simultánea.",
+            "Evaluación por Admin Rank exclusivamente.",
+            "Lógica First-Match excluyendo la postura del dispositivo."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Dentro de una regla de Access Policy de ZPA, las condiciones definidas en las distintas pestañas de criterios se evalúan mediante lógica booleana AND.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Access Policy"
+        },
+        {
+          "id": "quiz_07_02",
+          "enunciado": "Para reducir los registros innecesarios en la nube y evitar que los usuarios puedan escanear o descubrir segmentos de aplicaciones privadas a las que no tienen permiso, ¿qué acción de Client Forwarding Policy debe configurarse?",
+          "opciones": [
+            "Forward to ZPA",
+            "Only Forward Allowed Applications",
+            "Bypass ZPA",
+            "Allow Cascading"
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "La opción 'Only Forward Allowed Applications' evalúa los permisos localmente en el ZCC, reenviando solo el tráfico autorizado y realizando un bypass local silencioso para el resto.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Client Forwarding Policy"
+        },
+        {
+          "id": "quiz_07_03",
+          "enunciado": "Se configura una Timeout Policy para un grupo de desarrolladores. Después de 15 minutos de inactividad, la sesión TCP hacia el servidor SSH se cierra, pero cuando el desarrollador intenta abrir una nueva sesión 5 minutos después, conecta de inmediato sin pedirle contraseña del IdP. ¿A qué se debe esto?",
+          "opciones": [
+            "Se disparó el Idle Connection Timeout pero el Authentication Timeout aún no ha expirado.",
+            "El App Connector ha caído a Z-Tunnel 1.0.",
+            "La política de ZIdentity desactivó el MFA de forma permanente.",
+            "El usuario activó la regla de Grace Period."
+          ],
+          "indiceCorrecto": 0,
+          "explicacion": "El Idle Connection Timeout cierra conexiones inactivas por red pero no invalida la sesión de autenticación del usuario; mientras el Authentication Timeout siga vigente, el usuario puede abrir nuevas conexiones sin reautenticarse.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Timeout Policy"
+        },
+        {
+          "id": "quiz_07_04",
+          "enunciado": "Al diseñar las políticas de timeout en ZPA, un arquitecto de seguridad revisa el segmento que contiene los controladores de dominio Active Directory y servidores LDAP internos. ¿Qué configuración de Authentication Timeout es la recomendada para este tipo de tráfico de infraestructura?",
+          "opciones": [
+            "15 minutos",
+            "2 horas",
+            "7 días",
+            "Never (Sin expiración)"
+          ],
+          "indiceCorrecto": 3,
+          "explicacion": "Para servicios críticos de infraestructura de autenticación como AD, LDAP o IdPs locales, se debe configurar 'Never' para evitar cortar los flujos de autenticación subyacentes del sistema.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 7 — Implementando políticas ZPA, Sección Timeout Policy"
+        }
+      ]
+    }
+  ]
+}

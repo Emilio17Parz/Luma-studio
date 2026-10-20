@@ -1,0 +1,20 @@
+﻿
+# Archivos locales y compilaciones
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/.gradle/
+**/local.properties
+**/Pods/
+**/.symlinks/
+**/ephemeral/
+*.apk
+*.aab
+*.jks
+*.keystore
+**/key.properties
+.env
+.env.*
+*.bak
+*.respaldo-*

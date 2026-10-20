@@ -1,0 +1,180 @@
+{
+  "version": "1.0.0",
+  "titulo": "Material de Estudio Zscaler EDU-200 — Módulo 3: Gestión de dispositivos (Device Management)",
+  "descripcion": "Paquete de estudio individual para la aplicación Flutter sobre el Módulo 3: Gestión de dispositivos (Device Management).",
+  "temas": [
+    {
+      "id": "tema_03_gestion_dispositivos",
+      "titulo": "Módulo 3: Gestión de dispositivos (Device Management)",
+      "objetivos": [
+        "Comprender los tipos de túneles y las diferencias arquitectónicas clave entre Z-Tunnel 1.0 y Z-Tunnel 2.0.",
+        "Analizar la jerarquía de failover de Z-Tunnel (2.0 DTLS -> 2.0 TLS -> 1.0) y los requisitos para evitar caídas de versión.",
+        "Diferenciar las funciones y la relación entre App Profiles y Forwarding Profiles en el Zscaler Client Connector (ZCC).",
+        "Identificar los 7 criterios para definir redes de confianza (Trusted Networks) y las 5 frecuencias de actualización de ZCC (peor caso 80 min).",
+        "Evaluar la implementación de Device Posture como sensor de cumplimiento, sus 3 pilares, frecuencias de evaluación y diferencia de comportamiento entre ZIA y ZPA.",
+        "Examinar los tipos de releases de ZCC (LA, GA, GA-2, LTS) y la telemetría del Client Connector."
+      ],
+      "resumen": "El Módulo 3 de la certificación Zscaler EDU-200/ZDTA aborda la gestión integral de dispositivos mediante el Zscaler Client Connector (ZCC), la arquitectura de tunelización Z-Tunnel y la evaluación contextual de postura (Device Posture).\n\n1. Arquitectura de Tunelización y Z-Tunnel:\nZscaler soporta 6 tipos de túneles: HTTP Connect Tunnels, GRE, SSH Port Forwarding, IPSec, Zscaler Proprietary Microtunnels y DTLS/TLS Encrypted Tunnels. Z-Tunnel es la implementación propietaria de microtúneles de Zscaler.\n- Z-Tunnel 1.0: Opera sobre HTTP CONNECT hacia la IP Proxy VIP. Solo maneja tráfico web (puertos 80/443). No posee encriptación ni autenticación nativa del túnel (depende de la aplicación/HTTPS), abre un túnel por cada solicitud web y no tiene fallback.\n- Z-Tunnel 2.0: Opera sobre DTLS/TLS hacia la IP SVPN VIP. Encapsula todo el tráfico IP (todos los puertos y protocolos) en un único túnel persistente, e incluye encriptación y autenticación nativas. Posee un mecanismo de fallback automático: intenta primero DTLS (UDP) y, si es bloqueado por la red, cae a TLS (TCP).\n- Jerarquía de Failover: Z-Tunnel 2.0 (DTLS) -> Z-Tunnel 2.0 (TLS) -> Z-Tunnel 1.0. Para evitar que el tráfico caiga indebidamente a Z-Tunnel 1.0, se deben evitar balanceadores de carga y utilizar NAT con una sola IP de origen por dispositivo. En ubicaciones con más de 50 usuarios, se recomienda forwardear Z-Tunnel 1.0 mediante túneles GRE/IPsec o pools NAT, y para tráfico mayor a 2 Gbps, considerar ZIA Private Service Edges locales.\n\n2. Zscaler Client Connector (ZCC):\nZCC es un agente ligero que reemplaza a las VPNs legacy, redirigiendo tráfico hacia ZIA (seguridad), ZPA (acceso privado) y ZDX (monitoreo de experiencia), además de incluir Endpoint DLP. Soporta 6 plataformas: Windows, macOS, Chrome OS, iOS, Linux y Android.\n- Tipos de Release: LA (Limited Availability) -> GA (General Availability, recomendada para producción) -> GA-2. La versión LTS ofrece 12 meses de soporte exclusivamente con correcciones críticas. Un dato clave es que las plataformas móviles/ligeras (iOS, Android, Chrome OS) NUNCA cuentan con releases LA.\n- Perfiles y PAC Files: Se dividen conceptualmente en App Profiles y Forwarding Profiles. El App Profile determina QUÉ política descarga el agente según reglas y grupos/posturas de usuario, y referencia al Forwarding Profile (no al revés). El Forwarding Profile define CÓMO se enruta el tráfico según el entorno de red detectado (On-Trusted, Off-Trusted, VPN-Trusted, Split VPN). Las redes de confianza (Trusted Networks) se evalúan mediante 7 criterios: DNS Server, DNS Search Domain, Hostname and IP, Network Range, Default Gateway, DHCP Server y Egress IP.\n- Frecuencias de Procesos de Actualización (5 Refresh Processes): Refresh on Network Change (evento), PAC File Download (cada 15 min), Policy Update Check (cada 80 min), Update on PAC File URL Modification (evento) y Software Update Check (cada 2 horas). El tiempo máximo en el peor de los casos para que una actualización de política se propague es de aproximadamente 80 minutos.\n\n3. Device Posture y Telemetría:\nDevice Posture convierte a ZCC en un sensor activo de cumplimiento. La autenticación (identidad) y la postura (salud del dispositivo) son verificaciones independientes. Los 3 pilares son Device Identity (Device ID o External ID de MDM), Device Compliance (configuraciones requeridas) y Device Integrity (integridad del sistema). Se soportan criterios como Certificate Trust, Registry Key, Domain Joined y CrowdStrike ZTA Score (ej. mínimo 75).\n- Diferencia de comportamiento ante fallas de postura: En ZPA, un fallo en el Posture Check hace que la Access Policy deniegue el acceso de inmediato a la aplicación privada. En ZIA, una falla cambia la sesión a un App Profile más restrictivo, aplicando mayores restricciones sin cortar abruptamente sesiones ya establecidas (se aplica a nuevas solicitudes/reautenticaciones).\n- Evaluación de postura: Ocurre cada 15 minutos de forma automática, o inmediatamente ante cambios de red, reinicio del servicio ZCC o reboot del sistema. El objeto Device Group actúa como el enlace para aplicar posturas a Service Entitlements, App Profiles, ZPA Access Policies y ZIA Enforcement Policies.\n- Patron BYOD vs. VDI: BYOD se restringe típicamente solo a ZPA (acceso a apps privadas sin control total del dispositivo), mientras que VDI se limita solo a ZIA (protección web en escritorios virtuales).",
+      "conceptos": [
+        {
+          "termino": "Z-Tunnel 1.0 vs. Z-Tunnel 2.0",
+          "definicion": "Z-Tunnel 1.0 redirige solo tráfico web (80/443) mediante HTTP CONNECT sin cifrado propio del túnel. Z-Tunnel 2.0 redirige todo el tráfico IP sobre DTLS/TLS con cifrado/autenticación nativos y fallback automático."
+        },
+        {
+          "termino": "Jerarquía de Failover de Z-Tunnel",
+          "definicion": "Secuencia estricta de degradación de conectividad del agente: Z-Tunnel 2.0 (DTLS) -> Z-Tunnel 2.0 (TLS) -> Z-Tunnel 1.0."
+        },
+        {
+          "termino": "App Profile vs. Forwarding Profile",
+          "definicion": "El App Profile define las políticas del agente descargadas por el usuario y referencia al Forwarding Profile; el Forwarding Profile determina el modo de reenvío de tráfico (Tunnel, Local Proxy, None) según la red detectada."
+        },
+        {
+          "termino": "Trusted Networks (Redes de Confianza)",
+          "definicion": "Conjunto de 7 criterios de red (DNS Server, DNS Search Domain, Hostname/IP, Network Range, Default Gateway, DHCP Server, Egress IP) utilizados para determinar si un dispositivo está dentro de la red corporativa."
+        },
+        {
+          "termino": "Device Posture",
+          "definicion": "Evaluación continua (cada 15 min) del estado de cumplimiento y seguridad del endpoint basada en 3 pilares: Device Identity, Device Compliance y Device Integrity."
+        },
+        {
+          "termino": "WFP Driver (Windows Filtering Platform)",
+          "definicion": "Controlador avanzado de red en Windows que permite a ZCC realizar registro de flujos, detección de dominios bloqueados, bypass de aplicaciones de pago e inspección incluso de tráfico en bypass."
+        },
+        {
+          "termino": "General Availability (GA) vs. Limited Availability (LA)",
+          "definicion": "GA es la versión recomendada para despliegue general en producción. LA es una versión preliminar para pruebas. Plataformas móviles como iOS, Android y Chrome OS nunca reciben releases LA."
+        }
+      ],
+      "tarjetas": [
+        {
+          "id": "card_03_01",
+          "pregunta": "¿Cuál es la jerarquía exacta de failover para los túneles del Zscaler Client Connector?",
+          "respuesta": "La jerarquía estricta es: Z-Tunnel 2.0 (DTLS) -> Z-Tunnel 2.0 (TLS) -> Z-Tunnel 1.0.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Z-Tunnel"
+        },
+        {
+          "id": "card_03_02",
+          "pregunta": "¿Cuáles son las diferencias fundamentales entre Z-Tunnel 1.0 y Z-Tunnel 2.0 en cuanto a puertos soportados y encriptación?",
+          "respuesta": "Z-Tunnel 1.0 solo soporta tráfico web (puertos 80/443) y no encripta el túnel por sí mismo. Z-Tunnel 2.0 soporta todos los puertos y protocolos e incluye encriptación y autenticación nativas sobre DTLS/TLS.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Z-Tunnel"
+        },
+        {
+          "id": "card_03_03",
+          "pregunta": "¿Qué relación de dependencia existe entre un App Profile y un Forwarding Profile en ZCC?",
+          "respuesta": "El App Profile referencia al Forwarding Profile (un App Profile contiene la configuración del Forwarding Profile que utilizará), no al revés.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Zscaler Client Connector"
+        },
+        {
+          "id": "card_03_04",
+          "pregunta": "¿Cuáles son los 7 criterios que se pueden configurar para definir una red de confianza (Trusted Network)?",
+          "respuesta": "DNS Server, DNS Search Domain, Hostname and IP, Network Range, Default Gateway, DHCP Server y Egress IP.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Zscaler Client Connector"
+        },
+        {
+          "id": "card_03_05",
+          "pregunta": "¿Cuál es el tiempo máximo en el peor de los casos para que una actualización de política se propague a ZCC?",
+          "respuesta": "El peor caso es de aproximadamente 80 minutos, correspondiente al ciclo regular de comprobación de políticas (Policy Update Check).",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Zscaler Client Connector"
+        },
+        {
+          "id": "card_03_06",
+          "pregunta": "¿Cómo difiere la consecuencia de un fallo en el Device Posture Check entre ZPA y ZIA?",
+          "respuesta": "En ZPA, la Access Policy niega el acceso de inmediato a la aplicación privada. En ZIA, el agente cambia a un App Profile más restrictivo sin cortar las sesiones ya establecidas.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Device Posture"
+        },
+        {
+          "id": "card_03_07",
+          "pregunta": "¿Qué particularidad tienen las versiones de release para plataformas móviles como iOS, Android y Chrome OS?",
+          "respuesta": "Estas plataformas nunca cuentan con versiones de release LA (Limited Availability); solo reciben releases GA (General Availability) o LTS.",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Zscaler Client Connector"
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "quiz_03_01",
+          "enunciado": "Un ingeniero de red nota que el tráfico VoIP basado en UDP de los usuarios remotos experimenta alta latencia y caídas de sesión. Al revisar ZCC, descubre que la conexión ha caído a Z-Tunnel 1.0. ¿Por qué Z-Tunnel 1.0 causa este problema con el tráfico VoIP?",
+          "opciones": [
+            "Porque Z-Tunnel 1.0 requiere licencias ZDX activas para procesar voz.",
+            "Porque Z-Tunnel 1.0 solo redirige tráfico web en puertos 80 y 443, no soportando tráfico UDP ni otros puertos.",
+            "Porque Z-Tunnel 1.0 limita el ancho de banda a 250 Mbps por usuario.",
+            "Porque Z-Tunnel 1.0 obliga a usar encriptación IPsec en el endpoint."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Z-Tunnel 1.0 se basa en el método HTTP CONNECT y únicamente redirige tráfico web en los puertos 80 y 443. Al no soportar tráfico no-web ni protocolos basados en UDP (como los requeridos para VoIP), el tráfico no se tuneliza correctamente o cae a retransmisiones fallidas.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Z-Tunnel"
+        },
+        {
+          "id": "quiz_03_02",
+          "enunciado": "Una empresa está desplegando ZCC en laptops corporativas. El administrador desea asegurarse de que las solicitudes de actualización de política se ejecuten automáticamente en segundo plano. ¿Con qué frecuencia verifica ZCC por defecto si hay actualizaciones de política (Policy Update Check)?",
+          "opciones": [
+            "Cada 15 minutos.",
+            "Cada 40 minutos.",
+            "Cada 80 minutos.",
+            "Cada 2 horas."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "Según la tabla de 5 Key Refresh Processes de ZCC, la comprobación de actualización de política (Policy Update Check) ocurre cada 80 minutos por defecto (mientras que la descarga de archivo PAC es cada 15 min y el Software Update Check es cada 2 horas).",
+          "dificultad": "fácil",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Key Refresh Processes"
+        },
+        {
+          "id": "quiz_03_03",
+          "enunciado": "Un administrador de seguridad necesita configurar una regla de postura que evalúe si un dispositivo Windows pertenece al dominio de Active Directory y tiene instalado el sensor de CrowdStrike con una puntuación ZTA mínima de 75. ¿Qué componente actúa como el objeto de vinculación para referenciar estos criterios dentro de una política ZPA o ZIA?",
+          "opciones": [
+            "El Forwarding Profile.",
+            "El Device Group.",
+            "El PAC File de App Profile.",
+            "La IP de Egress."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "En la arquitectura de Zscaler, las reglas de postura de dispositivos (Device Posture) se agrupan dentro de un objeto llamado Device Group, el cual luego se utiliza como criterio en los Service Entitlements, App Profiles, ZPA Access Policies y ZIA Enforcement Policies.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Device Posture"
+        },
+        {
+          "id": "quiz_03_04",
+          "enunciado": "Un usuario que trabaja desde su domicilio intenta acceder a una aplicación web privada a través de ZPA. Su computadora pierde el estado de cumplimiento (Device Posture) porque su antivirus se desactualizó. ¿Qué ocurre de inmediato con su acceso a la aplicación privada en ZPA?",
+          "opciones": [
+            "La sesión se mantiene activa pero se desactiva la inspección SSL.",
+            "El agente cambia a un App Profile restrictivo pero no interrumpe el acceso.",
+            "La Access Policy de ZPA deniega el acceso a la aplicación de inmediato.",
+            "Se reenvía el tráfico mediante Z-Tunnel 1.0 como respaldo."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "A diferencia de ZIA (que cambia a un App Profile más restrictivo sin cortar la sesión actual), en ZPA un fallo de Device Posture provoca que la Access Policy bloquee la conexión a la aplicación privada inmediatamente.",
+          "dificultad": "intermedio",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Device Posture"
+        },
+        {
+          "id": "quiz_03_05",
+          "enunciado": "El equipo de TI de una organización está evaluando el canal de distribución de software para dispositivos móviles empresariales (iOS y Android). Al buscar la versión de prueba LA (Limited Availability) en el portal de Zscaler, no la encuentran. ¿A qué se debe esto?",
+          "opciones": [
+            "Las versiones LA requieren una suscripción independiente a ZDX.",
+            "Plataformas móviles como iOS, Android y Chrome OS nunca disponen de releases LA, ofreciendo únicamente releases GA o LTS.",
+            "Las versiones LA solo están disponibles para el controlador WFP de Windows.",
+            "Se debe solicitar un archivo PAC especial a soporte antes de habilitar LA en móviles."
+          ],
+          "indiceCorrecto": 1,
+          "explicacion": "Los documentos del Módulo 3 especifican explícitamente que las plataformas móviles y ligeras (iOS, Android, Chrome OS) NUNCA cuentan con releases LA (Limited Availability), distribuyéndose únicamente en versiones GA (General Availability) o LTS.",
+          "dificultad": "fácil",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Zscaler Client Connector Releases"
+        },
+        {
+          "id": "quiz_03_06",
+          "enunciado": "Durante el diseño de un perfil de reenvío (Forwarding Profile), un arquitecto de seguridad debe configurar los criterios para determinar cuando un usuario se encuentra dentro de la oficina corporativa (On-Trusted Network). ¿Cuál de las siguientes opciones NO forma parte de los 7 criterios oficiales para definir una Trusted Network?",
+          "opciones": [
+            "DNS Server y DNS Search Domain.",
+            "Default Gateway y DHCP Server.",
+            "BGP Autonomous System Number (ASN).",
+            "Network Range y Egress IP."
+          ],
+          "indiceCorrecto": 2,
+          "explicacion": "Los 7 criterios oficiales para definir una Trusted Network en Zscaler son: DNS Server, DNS Search Domain, Hostname and IP, Network Range, Default Gateway, DHCP Server y Egress IP. El BGP ASN no forma parte de este conjunto de criterios.",
+          "dificultad": "difícil",
+          "fuente": "Módulo 3 — Gestión de dispositivos, Sección Trusted Networks"
+        }
+      ]
+    }
+  ]
+}
